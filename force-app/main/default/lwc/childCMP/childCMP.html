@@ -1,0 +1,23 @@
+<template>
+    <lightning-card title="trackProprtyDemo" icon-name="standard:account">
+        Hello {trackParam}
+    </lightning-card>
+    <lightning-card title="apiPropDemo" icon-name="standard:account">
+        Hello {apiParam}
+    </lightning-card>
+    <lightning-card title="nonReactiveDemo" icon-name="standard:account">
+        Hello {nonReactiveProp}
+    </lightning-card>
+    
+    <div>
+        <lightning-button label="Test Behaviour" onclick = {handleparamValues}></lightning-button>
+    </div>
+    
+    <lightning-card>
+        <lightning-button label="click me" onclick = {handleMe}></lightning-button>
+    </lightning-card>
+    <lightning-card  title = "Contact Details" icon-name="standard:contact">
+        <p>{myName}</p>
+    </lightning-card>
+    
+    </template>

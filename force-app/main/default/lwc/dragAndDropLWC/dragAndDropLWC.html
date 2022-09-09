@@ -1,0 +1,44 @@
+<template>
+    <div style="margin-left:660px; width: 200px; height: 35px; margin-bottom: 40px;">
+    <lightning-input label="search" onchange={handleKeyChange} ></lightning-input>
+    </div>
+    <div class="card_wrapper">
+        
+        <template for:each={pickVals} for:item="item">
+            <div class="stageContainer" key={item} > 
+                <!-- style={calcWidth} -->
+                
+                <h1 class="column_heading" >{item}</h1>
+                <c-drag-and-drop-list records={records} stage={item} onrefresh={refreshComp}
+                
+                onlistitemdrag={handleListItemDrag}
+                onitemdrop={handleItemDrop}
+                ></c-drag-and-drop-list>
+            </div>
+            
+        </template>
+    </div>
+        
+    <lightning-card>
+        <lightning-layout>
+            <lightning-layout-item>
+                
+                <lightning-button label="Previous" 
+                icon-name="utility:chevronleft"
+                icon-position="left"
+                onclick={previousHandler}
+                disabled={disablePrevious}></lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="grow">
+                <p class="slds-text-align_center">Displaying {currentPage} of {totalPage} Page</p>
+            </lightning-layout-item>
+            <lightning-layout-item>
+                <lightning-button label="next" 
+                icon-name="utility:chevronright"
+                icon-position="right"
+                onclick={nextHandler}
+                disabled={disableNext}></lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>

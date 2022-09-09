@@ -1,0 +1,30 @@
+<template>
+    <lightning-card title="Select or create Template">
+        <lightning-layout>
+            <lightning-card>
+                <p> Please enter your Google Auth Key and Secret to Authorize with Google.</p>
+                    <lightning-input 
+                        type="text" 
+                        name="authKey"
+                        label="Enter Auth Key"
+                        value={authKey}
+                        onchange={handleAuthInput}>
+                    </lightning-input>
+                    <lightning-input 
+                        type="text" 
+                        name="authSecret"
+                        label="Enter Auth Secret"
+                        value={authSecret}
+                        onchange={handleAuthInput}>
+                    </lightning-input>
+            </lightning-card>
+        </lightning-layout>
+        <lightning-button variant="brand" 
+                            label="Authorize" 
+                            title="Authorize" 
+                            onclick={handleAuthorizeClick}
+                            disabled={isAuthBtnDisabled}
+                            class="slds-m-left_x-small">
+        </lightning-button>
+    </lightning-card>
+</template>

@@ -1,0 +1,38 @@
+<template>
+    <lightning-card>
+       
+     <lightning-input type="text" name="GuestName" label="Guest Name" onchange={guestChangeName}></lightning-input>
+               
+     <lightning-input type="text" name="Address" label="Guest Address" onchange={changeAddress}></lightning-input>
+               
+        <lightning-combobox label="Meal Preference" 
+                            name="MealPreference" 
+                            onchange={handleMealPreferenceChange} 
+                            options={controllingValues} 
+                            placeholder="--None--" 
+                            value={selectedMealPreference}>
+        </lightning-combobox><br/>
+    
+        <lightning-combobox label="Meal Type" 
+                            name="state"
+                            onchange={handleMealTypeChange} 
+                            options={dependentValues} 
+                            placeholder="--None--" 
+                            value={selectedType}
+                            disabled={isEmpty}>
+        </lightning-combobox><br/>                
+    
+
+        <lightning-input type="text" name="Email" label="Email" onchange={onChangeEmail}></lightning-input>
+    
+        <lightning-input type="text" name="Phone" label="Phone" onchange={onChangePhone}></lightning-input>
+               
+        <div class="slds-p-top_medium">
+        <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+                <div class="forceChangeRecordTypeFooter">
+                <lightning-button variant="brand" label="Save" onclick={saveRecord}></lightning-button>
+                </div>
+        </div>
+        </div>
+    </lightning-card>
+</template>

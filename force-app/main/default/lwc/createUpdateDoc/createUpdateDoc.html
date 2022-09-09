@@ -1,0 +1,72 @@
+<template>
+    <lightning-card title="Select or create Template">
+        <lightning-layout>
+            <template if:true={notAuthorized}>
+                <lightning-layout-item size="9" padding="around-small">
+                    <c-google-auth-key onauthorized={handleAuthorized}>
+                    </c-google-auth-key>
+                </lightning-layout-item>
+            </template>
+            <template if:true={docIdAvailable}>
+                <lightning-button variant="brand" 
+                                    label="Do you want to update the Google Doc?" 
+                                    title="Next" 
+                                    onclick={handleUpdateDoc}
+                                    class="slds-m-left_x-small">
+                </lightning-button>
+                <lightning-button variant="brand" 
+                                    label="Start Designing" 
+                                    title="Start Designing" 
+                                    onclick={handleStratDesign}
+                                    class="slds-m-left_x-small">
+                </lightning-button>
+            </template>
+            <template if:true={updateOrCreateDoc}>
+                    <lightning-layout-item size="9" padding="around-small">
+                        <template if:true={showRadioGroup}>
+                            <lightning-radio-group name="radioGroup"
+                                                label="Select your choice"
+                                                options={options}
+                                                value={value}
+                                                onchange={handleRadioChange}
+                                                required
+                                                type="radio">
+                            </lightning-radio-group>
+                        </template>
+                        <template if:true={isNew}>
+                            <lightning-input 
+                                type="text" 
+                                label="Enter Document Title"
+                                value={docTitle}
+                                onchange={handleTitleInputChange}>
+                            </lightning-input>
+                        </template>
+                        <template if:true={isExisting}>
+                            <lightning-input 
+                                type="text" 
+                                label="Enter Google Document ID"
+                                placeholder="XXXXXX_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                                value={docId}
+                                onchange={handleDocIdInputChange}>
+                            </lightning-input>
+                        </template>
+                        <lightning-button variant="brand" 
+                                            label="Next" 
+                                            title="Next" 
+                                            onclick={handleNextClick}
+                                            disabled={optionNotSelected}
+                                            class="slds-m-left_x-small">
+                        </lightning-button>
+                        <template if:true={previousBtn}>
+                            <lightning-button variant="brand" 
+                                        label="Previous" 
+                                        title="Previous" 
+                                        onclick={handlePreviousBtn}
+                                        class="slds-m-left_x-small">
+                            </lightning-button>
+                        </template>
+                    </lightning-layout-item>
+            </template>
+        </lightning-layout>
+    </lightning-card>
+</template>

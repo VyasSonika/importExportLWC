@@ -1,0 +1,19 @@
+<template>
+<lightning-card >
+    <div style="height: 200px;">
+        <lightning-datatable class="hide-header-action style-header-row"
+                                key-field="id" 
+                                data={account} 
+                                hide-checkbox-column="true"
+                                columns={columns}
+                                onrowaction={handleAccountAction}>
+        </lightning-datatable>
+            <c-model-pop-up record-id={accountId} getobjectapiname="Account" onmycustomevent={handleRefresh}></c-model-pop-up>
+            <c-confirmation-dialog-promises></c-confirmation-dialog-promises>
+    </div>
+</lightning-card>
+
+    <lightning-card>
+        <c-paginator records={lstAccount} onupdate={updateDataHandler}></c-paginator>
+    </lightning-card>
+</template>

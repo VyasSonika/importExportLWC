@@ -1,0 +1,41 @@
+<template>
+    <lightning-card>
+    <template if:true={isopenmodel}>
+        <div class="slds-container_small">
+            <section role="dialog" tabindex="-1" data-controls-modal="modal-Id" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open" data-keyboard="false" data-backdrop="static">
+                <div class="slds-modal__container" id="modal-Id">
+                    <header class="slds-modal__header ModalHeaderTitle" style="border-top: 1px solid black;border-left: 1px solid black;border-right: 1px solid black">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit Account Record</h2>
+                    </header>
+                <lightning-card>
+                    <lightning-record-edit-form object-api-name={objectApiName} record-id={recordId} 
+                        onsuccess={saveMethod}>
+                                <lightning-messages></lightning-messages>
+                                <div class="slds-var-m-around_medium"> 
+                                    <lightning-input-field field-name='Name' ></lightning-input-field>
+                                    <lightning-input-field field-name='Website'></lightning-input-field>
+                                    <lightning-input-field field-name='BillingCity'></lightning-input-field>
+                                    <lightning-input-field field-name='Phone'></lightning-input-field>
+                                    <lightning-input-field field-name='Industry'></lightning-input-field>
+                                    <lightning-input-field field-name='StageName'></lightning-input-field>
+
+
+                                </div>
+
+                        <footer class="slds-modal__footer" style="border-bottom: 1px solid black;border-left: 1px solid black;border-right: 1px solid black">
+                            
+                            <lightning-button  variant="neutral" label="Cancel" onclick={closeModal}>
+                            </lightning-button>&nbsp;&nbsp;&nbsp;&nbsp;
+                            
+                            <lightning-button  variant="brand" type="submit"  label="Save">
+                            </lightning-button>
+                        </footer>
+                    </lightning-record-edit-form>
+                </lightning-card> 
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+    </lightning-card>
+</template>
