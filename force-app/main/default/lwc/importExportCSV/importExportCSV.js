@@ -54,7 +54,7 @@ export default class ImportExportCSV extends LightningElement {
     } 
     uploadFileHandler(event) {
         // Get the list of records from the uploaded files
-        // const uploadedFiles = event.detail.files;
+        const uploadedFiles = event.detail.files;
         console.log('uploadedFiles', JSON.parse(JSON.stringify(uploadedFiles))  );
         // calling apex class csvFileread method
         csvFileRead({contentDocumentId : uploadedFiles[0].documentId})

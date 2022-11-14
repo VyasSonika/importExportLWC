@@ -1,0 +1,61 @@
+<template>
+    <div class="slds-align_absolute-center" style="font-size: xx-large; font-weight: 500; height: 70px;
+    padding: 20px;">Location</div>
+    <div  class="slds-align_absolute-center" >
+        <button class="button hello"  onclick={myLocation} >My Location </button>
+        <button class="button" onclick={addLocation}>Add Location</button>
+    </div>
+    
+    <div class="slds-align_absolute-center" style="padding: 10px;">
+        <span style="font-weight: bold;">Step1.</span>
+        <span>
+            Edit location by selecting the field
+        </span>&nbsp;
+    </div>
+
+    <div class="mapLocationCard">
+        <table class="slds-table slds-table_cell-buffer " >
+            <thead>
+                <tr class="slds-line-height_reset">
+                
+                    <th class="" scope="col">
+                    <div class="slds-truncate" title="Destination Name">Destination Name</div>
+                    </th>
+                    <th class="" scope="col">
+                    <div class="slds-truncate" title="Deatination Address">Deatination Address</div>
+                    </th>
+                    <th class="" scope="col">
+                    <div class="slds-truncate" title="Range">Range</div>
+                    </th>
+                    <th class="" scope="col">
+                    <div class="slds-truncate" title="Tags">Tags</div>
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody> 
+                <template for:each={records} for:item='item'>
+                    <tr class="slds-hint-parent" key ={item.Id} ondblclick={onDoubleClickEdit}>
+                        <template if:true={isEdited}></template>
+                        <th data-label="Destination Name" scope="row">
+                            <div class="slds-cell-wrap slds-table_striped">{item.Destination_Name__c}</div>
+                        </th>
+                        <td data-label="Deatination Address">
+                            <div class="slds-cell-wrap">{item.Destination_Address__c}</div>
+                        </td>
+                        <td data-label="Range">
+                            <div class="slds-cell-wrap slds-table_striped">{item.Range__c}</div>
+                        </td>
+                        <td data-label="Tags__c">
+                            <div class="slds-cell-wrap">{item.Tags__c}</div>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+        <div class="slds-align_absolute-center">
+            <lightning-button variant="success"  label="Update" style="margin: 20px;"></lightning-button>
+        </div>
+    </div>
+    
+</template>

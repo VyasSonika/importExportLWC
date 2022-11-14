@@ -1,0 +1,59 @@
+<template>
+    <div class="slds-align_absolute-center" style="font-size: xx-large; font-weight: 500; height: 70px;
+    padding: 20px;">Location upload</div>
+    <div  class="slds-align_absolute-center" >
+        <button class="button hello"  onclick={myLocation} >My Location </button>
+        <button class="button" onclick={addLocation}>Add Location</button>
+    </div>
+    
+    <div class="slds-align_absolute-center" style="padding-top: 10px;">
+        <span style="font-weight: bold;">Step1.</span>
+        <span>
+            Download the template
+        </span>&nbsp;
+        <span>
+            <a href="url" style="color:#247524">here</a>
+        </span>
+    </div>
+    <div class="slds-align_absolute-center" style="padding-bottom: 10px;">
+        <span style="font-weight: bold;">Step2.</span>
+        <span>
+            Upload the completed template below
+        </span>
+    </div>
+    <div class="my-card1 slds-align_absolute-center">
+        <div>
+             <img style="height: 50px; display: flex; margin: auto;" src={mapLoaction}>
+             <div if:false={isFile}> 
+                <input if:false={isupload} class="custom-file-input" type="file" accept={acceptedCSVFormats} style= "margin: auto; padding-left: 68px;" onchange={uploadFileHandler}>
+            </div>
+                <div  class="slds-col slds-size_1-of-1 slds-p-left_small slds-p-top_medium">{uploadfile}</div> 
+            <div if:true={isFile}>
+                <lightning-button if:true={isupload} variant="success" label="Upload" onclick={handleUploadFile} class="slds-m-left_x-small"></lightning-button>
+        
+            </div>
+        </div>
+    </div>
+
+    <template if:false={isFile}>
+        <div if:false={isupload}>
+            <div if:true={isMyLocation} class="my-card2 slds-align_absolute-center">
+                <div  class="slds-text-align_center" style="padding: 10px;">
+                    <p class="slds-text-heading_medium" style="font-weight: bold; font-size: 14px;">
+                        You have successfully added
+                        XXX new Locations
+                    </p>
+                    <p class="slds-text-body_small">
+                        if your location will be added to
+                        your mlog or location listing.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template for:each={listData} for:item="data"> 
+        <div key={data.Id}>
+            <c-my-location record-id={data.Id} records={listData}> </c-my-location>
+        </div>
+    </template>
+</template>
