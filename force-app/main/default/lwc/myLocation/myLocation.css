@@ -2,23 +2,39 @@
     border: 2px solid rgb(231, 229, 229);
   border-radius: 10px;
   background-color: white;
-  height: 500px;
+  height: auto;
   width: auto;
-  padding: 15px;
+  padding: 20px;
 }
 .button {
-    background-color: #494b49;
-    border: none;
-    color: white;
-    padding: 10px 12px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 10px;
-    margin:10px;
-    border-radius: 6px;
-    cursor: pointer;
+  background-color: #494b49;
+  border: none;
+  color: white;
+  padding: 10px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 15px;
+  margin:10px;
+  border-radius: 7px;
+  cursor: pointer;
 }
 .odd {
   background-color: gray !important;
+}
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+.table_overflow{
+  overflow:scroll;
+    height:100px;
+}
+table{
+  
+}
+tbody{
+    overflow-y: 30px;
 }

@@ -13,65 +13,72 @@ public with sharing class DriverController {
                     FROM Driver__c WHERE Id !=NULL];
     }
     @AuraEnabled
-    public static ContentVersion saveFileData(Id recordId, String strFileName, String base64Data) {
-        // Decoding base64Data
-        // base64Data = EncodingUtil.urlDecode(base64Data, 'UTF-8');
-        
-        // inserting file
-        ContentVersion cv = new ContentVersion();
-        cv.Title = strFileName;
-        cv.PathOnClient = '/' + strFileName;
-        cv.FirstPublishLocationId = recordId;
-        cv.VersionData = EncodingUtil.base64Decode(base64Data);
-        cv.IsMajorVersion = true;
-        Insert cv;
-        return cv;
-    }
-
-    @AuraEnabled
-    public static list<Driver__c> releatedFiles(Id recordId){
-        list<id> lstConDocs = new list<id>();
+    public static list<Driver__c> releatedFiles(Id conId){
+        System.debug('content document id:' + conId);
         list<Driver__c> dr = new list<Driver__c>();
-        for(ContentDocumentLink cntLink : [Select Id, ContentDocumentId From ContentDocumentLink Where LinkedEntityId =:recordId]) {
-            lstConDocs.add(cntLink.ContentDocumentId);
+        ContentVersion contentVersionObj = [SELECT Id, 
+                                                    VersionData 
+                                                    FROM ContentVersion 
+                                                    WHERE ContentDocumentId =:conId];
+        System.debug('contentVersionObj' + contentVersionObj);
+        // split the file data
+        list<String> csvRecordsList = contentVersionObj.VersionData.toString().split('\n');
+        System.debug('csvRecordsList' + csvRecordsList);
+        for(Integer i = 1; i < csvRecordsList.size(); i++){
+            Driver__c d = new Driver__c();
+            list<String> csvRowData = csvRecordsList[i].split(',');
+            System.debug('csvRowData====> '+csvRowData);
+            d.Destination_Name__c = csvRowData[0]; // dName
+            d.Range__c = Decimal.valueOf(csvRowData[1]);
+            d.Tags__c = csvRowData[2];
+            //d.Submit__c = csvRowData[4];
+            d.Destination_Address__CountryCode__s = csvRowData[3];
+            d.Destination_Address__Street__s = csvRowData[4];
+            d.Destination_Address__City__s = csvRowData[5];
+            d.Destination_Address__StateCode__s = csvRowData[6];
+            d.Destination_Address__PostalCode__s = csvRowData[7];
+
+            dr.add(d);
+            upsert dr;
+            System.debug(dr);
         }
-        if(!lstConDocs.isEmpty()) {
-            ContentVersion contentVersionObj = [SELECT Id, Title, ContentDocumentId FROM ContentVersion WHERE ContentDocumentId IN :lstConDocs];
-            System.debug('contentVersionObj' + contentVersionObj);
-            // split the file data
-            list<String> csvRecordsList = contentVersionObj.VersionData.toString().split('\n');
-            System.debug('csvRecordsList' + csvRecordsList);
-            for(Integer i = 1; i < csvRecordsList.size(); i++){
-                Driver__c d = new Driver__c();
-                list<String> csvRowData = csvRecordsList[i].split(',');
-                System.debug('csvRowData====> '+csvRowData);
-                d.Destination_Name__c = csvRowData[0]; // dName
-               // d.Destination_Address__c = csvRowData[1];
-                d.Range__c = Decimal.valueOf(csvRowData[1]);
-                d.Tags__c = csvRowData[2];
-                d.Submit__c = csvRowData[3];
-                if(!String.isBlank(recordId)){
-                    d.Id = recordId;
-                }
-                dr.add(d);
-                upsert dr;
-                System.debug(dr);
-            }
-            return dr; 
-        }   
-        else {
-            return null;
-        }
+        return dr; 
+    }   
+    @AuraEnabled
+    public static Driver__c updateRecord(String recordId, String desName, String desAddress, String range, String tag){
+        System.debug(recordId);
+        System.debug(desName);
+        System.debug(desAddress);
+        System.debug(range);
+        System.debug(tag);
+        Driver__c d = new Driver__c(Id = recordId);
+        String[] address     = desAddress.split(',');
+        d.Destination_Address__CountryCode__s = address[0];
+        d.Destination_Address__Street__s = address[1];
+        d.Destination_Address__City__s = address[2];
+        // d.Destination_Address__StateCode__s = address[3];
+        d.Destination_Address__PostalCode__s = address[3];
+
+        System.debug(d.Destination_Address__City__s);
+        d.Destination_Name__c = desName;
+        d.Range__c = decimal.valueOf(range);
+        d.Tags__c = tag;
+        update d;
+        return d;
     }
 
     @AuraEnabled
-    public static String uploadFile(String base64, String filename, String recordId) {
-        ContentVersion cv = createContentVersion(base64, filename, recordId);
+    public static String uploadFile(Id recordId, String strFileName, String base64Data) {
+        System.debug('base64Data:' + base64Data);
+        System.debug('recordId:' + recordId);
+        System.debug('strFileName:' + strFileName);
+    
+        ContentVersion cv = new ContentVersion();
+        cv = createContentVersion(base64Data, strFileName, recordId);
         system.debug('cvId' + cv.Id);
         ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
         system.debug('cdl' + cdl);
-        if (cv == null || cdl == null) { return null; }
-        return cdl.Id;
+        return cdl.ContentDocumentId;
     }
     private static ContentVersion createContentVersion(String base64, String filename, String recordId) {
         ContentVersion cv = new ContentVersion();
@@ -81,11 +88,11 @@ public with sharing class DriverController {
         cv.FirstPublishLocationId = recordId;
         system.debug('title' + cv.PathOnClient);
         try {
-        insert cv;
-        return cv;
+            if(cv.Id=='' || cv.Id == null){ insert cv; }
+            return cv;
         } catch(DMLException e) {
         System.debug(e);
-        return null;
+        return cv;
         }
     }
     private static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
@@ -98,11 +105,11 @@ public with sharing class DriverController {
         // V = Viewer, C = Collaborator, I = Inferred
         cdl.ShareType = 'V';
         try {
-            insert cdl;
+            if(cdl.Id=='' || cdl.Id == null){ insert cdl; }
             return cdl;
         } catch(DMLException e) {
             System.debug(e);
-            return null;
+            return cdl;
         }
     }
 }

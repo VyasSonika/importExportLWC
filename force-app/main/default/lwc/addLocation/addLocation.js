@@ -3,8 +3,9 @@ import MapLoaction from '@salesforce/resourceUrl/MapLocation';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import uploadFiles from '@salesforce/apex/DriverController.uploadFile';
 import getDriverList from '@salesforce/apex/DriverController.getDriverList'
-import saveFileData from '@salesforce/apex/DriverController.saveFileData';
-
+//import saveFileData from '@salesforce/apex/DriverController.saveFileData';
+import releatedFiles from '@salesforce/apex/DriverController.releatedFiles';
+import { refreshApex } from '@salesforce/apex';
 import { readAsDataURL } from './readFile';
 export default class AddLocation extends LightningElement {
     mapLoaction = MapLoaction;
@@ -18,18 +19,21 @@ export default class AddLocation extends LightningElement {
     csvString;
     recordId;
     isupload = false;
-   @track listData=[];
-    base64String='';
-   
+    @track listData=[];
+    base64String ='';
+    fileContent = '';
+    isError = false;
+    isSuccess = false;
+    fileName = '';
+    isDisabled = false;
     @wire(getDriverList)
     wiredDriver(result){
-        this.refreshTable = result;
+        this.refreshTable = result; 
         const { error, data } = result;
         if(data){ 
-            console.log('data', data);
+            console.log('data of addLocation', data);
             this.listData = data ;
             this.recordId = this.listData.map(e=>  e.Id);
-            console.log('recordId', this.recordId);
 
         }
         if(error){
@@ -37,16 +41,11 @@ export default class AddLocation extends LightningElement {
         }
     }
     myLocation(){
-        this.isMyLocation = true;
-        this.isAddLocation =false;
+        this.isDisabled = false;
+        // this.isMyLocation = true;
+        // this.isAddLocation =false;
     }
-    addLocation(){
-        this.isMyLocation = false;
-        this.isAddLocation =true;
-    }
-    successMsg(){
-
-    }
+   
    
     get acceptedCSVFormats() {
         return ['.csv', '.xlsx'];
@@ -54,54 +53,18 @@ export default class AddLocation extends LightningElement {
     get uploadfile(){ 
         console.log(this.fileData);
         if (this.fileData){
-            this.isFile = true;
-            return this.fileData[0].name;
+            if(this.fileData[0].type === 'text/csv'){
+                // this.isFile = true;
+                this.fileName = this.fileData[0].name;
+                return this.fileName;
+            }
+            this.isFile = false;
+            this.isupload= false;
+            this.isMyLocation = true;
+            return 'Please select CSV file only.'
         } 
         return 'or drag and drop file here';
     }
-
-    // uploadFileHandler(event){
-    //     this.isAddLocation = true;
-    //      this.isFile = true;
-    //     console.log(event.target.files);
-    //      let fileName;
-    //     if(event.target.files.length > 0) {
-    //         this.fileData = event.target.files[0];
-    //         console.log('fileData:', this.checkFileType(this.fileData));
-
-    //         let fileTypeBool = this.checkFileType(this.fileData);
-    //         console.log('fileTypeBool:', fileTypeBool);
-    //         if(fileTypeBool){
-    //             if(this.fileData.name){
-    //                 fileName  = this.fileData.name;
-    //            }
-    //            let fileArray = [];
-    //            this.fileReader = new FileReader();
-    //            console.log('fileReader:', this.fileReader.onload);
-    //            this.fileReader.onload = function(){
-    //                 let base64 = 'base64,';
-    //                 console.log('base64:', base64);
-    //                 let content = freader.result.indexOf(base64) + base64.length;
-    //                 console.log('content:', content);
-    //                 let fileContents = freader.result.substring(content);
-    //                 console.log('fileContents:', fileContents);
-
-    //                 fileArray.push({
-    //                     Title: file.name,
-    //                     VersionData: fileContents,
-    //                     documentType:this.fileData.type       
-    //                 });
-    //                 console.log('fileArray:', fileArray);
-    //             }   
-    //         }
-    //     }
-        
-    // }
-    // checkFileType(file){
-    //     let name = file.name.split('.').pop();
-    //     let supportedFiles = ['pdf','csv','jpg'];
-    //    return (supportedFiles.includes(name) ?  true :  false);
-    // }
     
     uploadFileHandler(event) {
         this.isFile = false;
@@ -110,7 +73,7 @@ export default class AddLocation extends LightningElement {
         this.fileData = event.target.files;
         let file= this.fileData[0];
         
-        console.log(file);
+        console.log('file:-',file);
         readAsDataURL(file)
         .then(file => {
             this.base64String = file.split(',')[1];
@@ -125,21 +88,20 @@ export default class AddLocation extends LightningElement {
     handleUploadFile(){
         this.isFile = true;
         this.isupload= false;
-        let base64 = this.base64String;
-        console.log('base64:', base64);
-        let fileName = this.fileData[0].name;
-        console.log('fileName:', fileName);
+        let base64Data = this.base64String;
+        console.log('base64:', base64Data);
+        let strFileName = this.fileData[0].name;
+        console.log('fileName:', strFileName);
         let recordId = this.recordId[0].toString();
         console.log('recordId:', recordId);
 
-        // uploadFiles({ base64, fileName, recordId})
+        uploadFiles({ recordId: recordId, strFileName: strFileName, base64Data: base64Data})
            // Calling apex class to insert the file
-        saveFileData({ recordId, fileName, base64})
+        //saveFileData({ recordId: recordId, strFileName: strFileName, base64Data: base64Data})
         .then(result=>{
             console.log(result);
-            this.fileData = null
-            let title = `${fileName} uploaded successfully!!`
-            this.toast(title)
+            this.fileContent = result;
+            this.objectDataInsert();
         })
         
         this.isFile = false;
@@ -147,16 +109,43 @@ export default class AddLocation extends LightningElement {
         
     }
 
-  toast(title){
-        const toastEvent = new ShowToastEvent({
-            title, 
-            variant:"success"
+//   toast(title){
+//         const toastEvent = new ShowToastEvent({
+//             title, 
+//             variant:"success"
+//         })
+//         this.dispatchEvent(toastEvent)
+//         this.isFile = false;
+//         this.isupload= false;
+//         this.isMyLocation = true;
+//     }
+       // Getting releated files of the current record
+    objectDataInsert() {
+        let conVerId = this.fileContent;
+        releatedFiles({conId: conVerId})
+        .then(data => {
+            console.log('data:', data);
+            this.isSuccess= true;
+            this.isError = false;
+            //let title = `${strFileName} uploaded successfully!!`
+            this.template.querySelector("my-card2");
+            return refreshApex(this.refreshTable);
         })
-        this.dispatchEvent(toastEvent)
+        .catch(error => {
+            console.log(error);
+            this.isError =true;
+            this.isSuccess= false;
+            this.template.querySelector("my-card2");
+            // this.dispatchEvent(
+            //     new ShowToastEvent({
+            //         title: 'Error!!',
+            //         message: this.template.querySelector("my-card2"),
+            //     }),
+            // );
+        });
         this.isFile = false;
         this.isupload= false;
-        // this.isMyLocation = true;
+        this.isMyLocation = true;
     }
-     
 }
     
