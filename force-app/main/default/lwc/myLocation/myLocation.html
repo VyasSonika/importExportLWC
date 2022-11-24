@@ -14,13 +14,13 @@
     </div>
 
     <div class="mapLocationCard" >
-        <div class="slds-table_edit_container">
-            <table class="slds-table slds-table_cell-buffer slds-table_edit" style="" >
-                <thead>
+        <!-- <div class="slds-table_edit_container"> -->
+            <table >
+                <thead class="">
                     <tr class="">
                     
                         <th class="" scope="col">
-                            <div class="slds-grid slds-grid_vertical-align-center" title="Destination Name">Destination Name</div>
+                            <div class="slds-truncate" title="Destination Name">Destination Name</div>
                         </th>
                         <th class="" scope="col">
                             <div class="slds-truncate" title="Deatination Address">Deatination Address</div>
@@ -34,52 +34,56 @@
 
                     </tr>
                 </thead>
-                <tbody class="table_overflow">
-                    <template for:each={records} for:item='item'>
-                        <tr class="slds-hint-parent" key ={item.key} ondblclick={onDoubleClickEdit}>
-                            <template if:true={isEdited}></template>
-                            <th data-label="Destination Name" scope="row">
-                                <template if:false={isEdited}>
-                                    <div class="slds-cell-wrap slds-table_striped">{item.Destination_Name__c}</div>
-                                </template>                          
-                                <template if:true={isEdited}>
-                                    <lightning-input class = "slds-m-left_x-small" label="Destination Name" data-id={item.Id} value={item.Destination_Name__c} variant="label-hidden" onchange={handleNameChange}></lightning-input>
-                                </template>
-                            </th>
-                            <td data-label="Deatination Address" class="slds-cell-edit" role="gridcell">
-                                <template if:false={isEdited}>
-                                    <div class="slds-cell-wrap slds-table_striped">{item.Address}</div>
-                                </template>                          
-                                <template if:true={isEdited}>
-                                    <lightning-input class = "slds-m-left_x-small" label="Destination Address" data-id={item.Id} value={item.Address} variant="label-hidden" onchange={handleAddressChange}></lightning-input>
-                                </template>
-                            </td>
-                            <td data-label="Range" class="slds-cell-edit">
-                                <template if:false={isEdited}>
-                                    <div class="slds-cell-wrap slds-table_striped">{item.Range__c}</div>
-                                </template>                          
-                                <template if:true={isEdited}>
-                                    <lightning-input class = "slds-m-left_x-small" label="Destination Range" data-id={item.Id} value={item.Range__c} variant="label-hidden" onchange={handleRangeChange}></lightning-input>
-                                </template>
-                            </td>
-                            <td data-label="Tags__c" class="slds-cell-edit">
-                    
-                                <template if:false={isEdited}>
-                                    <div class="slds-cell-wrap slds-table_striped">{item.Tags__c}</div>
-                                </template>                          
-                                <template if:true={isEdited}>
-                                    <lightning-input class = "slds-m-left_x-small" label="Destination Tags" data-id={item.Id} value={item.Tags__c} variant="label-hidden" onchange={handleTagChange}></lightning-input>
-                                </template>
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
+
+                    <tbody class ="table-body" style='height: 200px; display: block; overflow-y: scroll; padding-right: 20px'>
+                        <template for:each={records} for:item='item' for:index='index'>
+                            <tr class="slds-hint-parent" key ={item.Id} data-id={item.Id}  onclick={onDoubleClickEdit}>
+            
+                                <td data-label="Destination Name" scope="row">
+                                    <template if:false={item.IsEdited}>
+                                        <div class="slds-cell-wrap">{item.Destination_Name__c}</div>
+                                    </template>                          
+                                    <template if:true={item.IsEdited}>
+                                        <lightning-input class ="slds-m-left_x-small" label="Destination Name" data-id={item.Id} value={item.Destination_Name__c} variant="label-hidden" onchange={handleNameChange}></lightning-input>
+                                    </template>
+                                </td>
+                                <td data-label="Deatination Address" scope="row" class="toolTip-position">
+                                
+                                        <div if:false={item.IsEdited} class="slds-cell-wrap slds-truncate tooltip">{item.Address}
+                                            <span class="tooltiptext">{item.Address}</span></div>
+                                                    
+                                    <template if:true={item.IsEdited}>
+                                        <lightning-input class = "slds-m-left_x-small" label="Destination Address" data-id={item.Id} value={item.Address} variant="label-hidden" onchange={handleAddressChange}></lightning-input>
+                                    </template>
+                                </td>
+                                <td data-label="Range" scope="row">
+                                    <template if:false={item.IsEdited}>
+                                        <div class="slds-cell-wrap">{item.Range__c}</div>
+                                    </template>                          
+                                    <template if:true={item.IsEdited}>
+                                        <lightning-input class = "slds-m-left_x-small" label="Destination Range" data-id={item.Id} value={item.Range__c} variant="label-hidden" onchange={handleRangeChange}></lightning-input>
+                                    </template>
+                                </td>
+                                <td data-label="Tags__c" scope="row">
+                        
+                                    <template if:false={item.IsEdited}>
+                                        <div class="slds-cell-wrap slds-truncate">{item.Tags__c}</div>
+                                    </template>                          
+                                    <template if:true={item.IsEdited}>
+                                        <lightning-input class = "slds-m-left_x-small" label="Destination Tags" data-id={item.Id} value={item.Tags__c} variant="label-hidden" onchange={handleTagChange}></lightning-input>
+                                    </template>
+                                </td>
+                            </tr>
+                        </template>
+        
+                    </tbody>
+                <!-- </div> -->
             </table>
             <div class="slds-align_absolute-center" if:true={isEdited}>
                 <lightning-button  variant="success"  label="Update" style="margin: 20px;" onclick={handleUpdate}></lightning-button>
-                <lightning-button  variant="success"  label="Cancle" style="margin: 20px;" onclick={handleCancle}></lightning-button>
+                <lightning-button  variant="success"  label="Cancel" style="margin: 20px;" onclick={handleCancle}></lightning-button>
             </div>
-        </div>
+        <!-- </div> -->
     </div>
     
 </template>

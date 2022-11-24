@@ -1,8 +1,8 @@
 .mapLocationCard{
-    border: 2px solid rgb(231, 229, 229);
+  border: 2px solid rgb(231, 229, 229);
   border-radius: 10px;
   background-color: white;
-  height: auto;
+  /* height: auto; */
   width: auto;
   padding: 20px;
 }
@@ -19,22 +19,106 @@
   border-radius: 7px;
   cursor: pointer;
 }
-.odd {
-  background-color: gray !important;
-}
 button:disabled,
 button[disabled]{
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
 }
-.table_overflow{
-  overflow:scroll;
-    height:100px;
+.table-container {
+  height: 10em;
 }
-table{
+table {
+  display: block;
+  flex-flow: column;
+  width: auto;
+  border-collapse: collapse;
+}
+table tbody {
+  /* body takes all the remaining available space */
+  flex: 1 1 auto;
+  display: block;
+}
+table tbody tr {
+  width: 100%;
+}
+table thead{
+  width: 100%
+}
+table thead, table tbody tr {
+  display: table;
+  table-layout: fixed;
+
+}
+tr, td{
+  text-align: left;
+  padding: 7px;
+}
+.table-body tr:nth-child(odd){
+  background-color: rgb(231, 229, 229);
+  border-radius: 8px;
+}
+.tooltip {
+  position: initial;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  top: 35px;
+  left: 0%;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
   
 }
-tbody{
-    overflow-y: 30px;
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.slds-truncate{
+  white-space: nowrap;
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* width */
+.table-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+.table-body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgb(190, 190, 190);
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(14, 0, 0);
+  border-radius: 7px;
+  height: 0px;
+}
+/*scrollbar button design*/
+::-webkit-scrollbar-button {
+  height: 5px;
+} 
+.toolTip-position{
+  position: relative;
 }

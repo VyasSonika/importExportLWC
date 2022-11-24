@@ -14,7 +14,7 @@ export default class MyLocation extends LightningElement {
     // @track cols = cols;
     refreshTable
     @track records=[];
-    isEdited = false;
+    isEdited;
     @track element =[];
     recordId = '';
     desName = ''
@@ -40,19 +40,49 @@ export default class MyLocation extends LightningElement {
                     this.range = r.Range__c;
                     this.tag = r.Tags__c;
                     this.desAddress = r.Address;
+                    r.IsEdited = false;
+                    this.isEdited = r.IsEdited;
                     return r;
             })
             console.log('records myLocation', this.records);
+            console.log('isEdited:', this.isEdited);
         }
         if(error){
             console.error(error)
         }
     }
-    onDoubleClickEdit() {
+    onDoubleClickEdit(e){
+        let edit = e.currentTarget.dataset.id;
+        console.log('edit:', edit);
+        this.records.map(item =>{
+           
+            if(edit==item.Id){
+                item.IsEdited = true;
+            }else{
+                item.IsEdited = false;
+            }
+        })
+        console.log('change value', e.currentTarget.dataset.id);
+        console.log('onDubleClick:', this.records);
         this.isEdited = true;
     }
+    handleNameEdit(e) {
+        // this.records[e.target.dataset.index].IsEdited = true;
+        let isEdited = this.template.querySelectorAll[e.target.dataset.index, 'lightning-input']
+        console.log('isedited:', isEdited);
+        if(isEdited){
+            this.isEdited= true;
+        }
+        console.log('handle name edit:', this.records);
+       
+    }
+    handleAddressEdit(){
+        console.log('handleAddressEdit:-');
+        this.records.map(item =>{
+            item.IsEdited = true;
+           });
+    }
     handleNameChange(event){
-        
         console.log('handleNameChange');
         let records = JSON.parse(JSON.stringify(this.records));
 
@@ -60,6 +90,7 @@ export default class MyLocation extends LightningElement {
         console.log('recordId', this.recordId);
         records.forEach(ele => {
             if(ele.Id === event.target.dataset.id ){
+                this.isEdited= true;
                 ele.Destination_Name__c = event.target.value;
                 this.desName= ele.Destination_Name__c;
             }
@@ -112,10 +143,16 @@ export default class MyLocation extends LightningElement {
         .catch (error => {
             console.log("error", error);
         })
-        this.isEdited =false;
+        this.records.map(item =>{
+            item.IsEdited = false;
+            this.isEdited = item.IsEdited;
+        })
         return refreshApex(this.refreshTable);
     }
     handleCancle(){
-        this.isEdited = false;
+        this.records.map(item =>{
+            item.IsEdited = false;
+            this.isEdited = item.IsEdited;
+        })
     }
 }
