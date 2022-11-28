@@ -26,6 +26,7 @@ export default class AddLocation extends LightningElement {
     isSuccess = false;
     fileName = '';
     isDisabled = false;
+    isActive = false;
     @wire(getDriverList)
     wiredDriver(result){
         this.refreshTable = result; 
@@ -40,10 +41,14 @@ export default class AddLocation extends LightningElement {
             console.error(error)
         }
     }
-    myLocation(){
+    handleMyLocation(){
         this.isDisabled = false;
-        // this.isMyLocation = true;
-        // this.isAddLocation =false;
+        this.isActive = true;
+    }
+    handleAddLocation(){
+        console.log('handleAddLocation');
+        this.isDisabled = true;
+        this.isActive = false;
     }
    
    
@@ -108,18 +113,6 @@ export default class AddLocation extends LightningElement {
         this.isupload= false;
         
     }
-
-//   toast(title){
-//         const toastEvent = new ShowToastEvent({
-//             title, 
-//             variant:"success"
-//         })
-//         this.dispatchEvent(toastEvent)
-//         this.isFile = false;
-//         this.isupload= false;
-//         this.isMyLocation = true;
-//     }
-       // Getting releated files of the current record
     objectDataInsert() {
         let conVerId = this.fileContent;
         releatedFiles({conId: conVerId})
@@ -146,6 +139,10 @@ export default class AddLocation extends LightningElement {
         this.isFile = false;
         this.isupload= false;
         this.isMyLocation = true;
+    }
+    handleChildRefresh(){
+        return refreshApex(this.refreshTable);
+
     }
 }
     

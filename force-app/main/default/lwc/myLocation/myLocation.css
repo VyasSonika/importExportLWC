@@ -50,7 +50,7 @@ table thead, table tbody tr {
   table-layout: fixed;
 
 }
-tr, td{
+th, tr, td{
   text-align: left;
   padding: 7px;
 }

@@ -1,7 +1,7 @@
 .button {
-    background-color: #494b49;
-    border: none;
-    color: white;
+    background-color: #cccccc;;
+    border: 1px solid #999999;
+    color: black;
     padding: 10px 12px;
     text-align: center;
     text-decoration: none;
@@ -10,6 +10,18 @@
     margin:10px;
     border-radius: 7px;
     cursor: pointer;
+}
+/* .button:hover{
+  background-color: #494b49;
+  color: white;
+} */
+/* .button:active {
+  background-color: #494b49;
+  color: white;
+} */
+.button:focus{
+  background-color: #494b49;
+  color: white;
 }
 .custom-file-input::-webkit-file-upload-button {
   visibility: hidden;

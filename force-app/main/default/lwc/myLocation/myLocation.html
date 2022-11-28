@@ -1,5 +1,5 @@
 <template>
-    <div class="slds-align_absolute-center" style="font-size: xx-large; font-weight: 500; height: 70px;
+    <!-- <div class="slds-align_absolute-center" style="font-size: xx-large; font-weight: 500; height: 70px;
     padding: 20px;">Location</div>
     <div  class="slds-align_absolute-center" >
         <button class="button hello"  onclick={myLocation} >My Location </button>
@@ -11,7 +11,7 @@
         <span>
             Edit location by selecting the field
         </span>&nbsp;
-    </div>
+    </div> -->
 
     <div class="mapLocationCard" >
         <!-- <div class="slds-table_edit_container"> -->
@@ -35,16 +35,16 @@
                     </tr>
                 </thead>
 
-                    <tbody class ="table-body" style='height: 200px; display: block; overflow-y: scroll; padding-right: 20px'>
+                    <tbody class ="table-body" style='height: 150px; display: block; overflow-y: scroll; padding-right: 20px'>
                         <template for:each={records} for:item='item' for:index='index'>
                             <tr class="slds-hint-parent" key ={item.Id} data-id={item.Id}  onclick={onDoubleClickEdit}>
             
                                 <td data-label="Destination Name" scope="row">
                                     <template if:false={item.IsEdited}>
-                                        <div class="slds-cell-wrap">{item.Destination_Name__c}</div>
+                                        <div class="slds-cell-wrap">{item.Name}</div>
                                     </template>                          
                                     <template if:true={item.IsEdited}>
-                                        <lightning-input class ="slds-m-left_x-small" label="Destination Name" data-id={item.Id} value={item.Destination_Name__c} variant="label-hidden" onchange={handleNameChange}></lightning-input>
+                                        <lightning-input class ="slds-m-left_x-small" label="Destination Name" data-id={item.Id} value={item.Name} variant="label-hidden" onchange={handleNameChange}></lightning-input>
                                     </template>
                                 </td>
                                 <td data-label="Deatination Address" scope="row" class="toolTip-position">

@@ -4,13 +4,13 @@ public with sharing class DriverController {
     public static List<Driver__c> getDriverList(){
         return [SELECT 
                     Id,
+                    Name,
                     Contact__r.Name, 
                     Destination_Address__c, 
                     Location__c, 
                     Range__c,
-                    Tags__c,
-                    Destination_Name__c
-                    FROM Driver__c WHERE Id !=NULL];
+                    Tags__c
+                    FROM Driver__c ORDER BY Name ];
     }
     @AuraEnabled
     public static list<Driver__c> releatedFiles(Id conId){
@@ -28,7 +28,7 @@ public with sharing class DriverController {
             Driver__c d = new Driver__c();
             list<String> csvRowData = csvRecordsList[i].split(',');
             System.debug('csvRowData====> '+csvRowData);
-            d.Destination_Name__c = csvRowData[0]; // dName
+            d.Name = csvRowData[0]; // dName
             d.Range__c = Decimal.valueOf(csvRowData[1]);
             d.Tags__c = csvRowData[2];
             //d.Submit__c = csvRowData[4];
@@ -60,7 +60,7 @@ public with sharing class DriverController {
         d.Destination_Address__PostalCode__s = address[3];
 
         System.debug(d.Destination_Address__City__s);
-        d.Destination_Name__c = desName;
+        d.Name = desName;
         d.Range__c = decimal.valueOf(range);
         d.Tags__c = tag;
         update d;

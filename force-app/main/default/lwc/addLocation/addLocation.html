@@ -2,9 +2,9 @@
     <div class="slds-align_absolute-center" style="font-size: xx-large; font-weight: 500; height: 70px;
     padding: 20px;">Location upload</div>
     <div  class="slds-align_absolute-center" >
-        <button class="button" disabled>My Location </button>
-        <!-- <lightning-button class="button hello"  onclick={myLocation} disabled={isDisabled}>My Location</lightning-button> -->
-        <button class="button" onclick={addLocation}>Add Location</button>
+        <button class="button" onclick={handleMyLocation}>My Location </button>
+
+        <button class="button" onclick={handleAddLocation}>Add Location</button>
     </div>
     
     <div class="slds-align_absolute-center" style="padding-top: 10px;">
@@ -22,19 +22,21 @@
             Upload the completed template below
         </span>
     </div>
-    <div class="my-card1 slds-align_absolute-center">
-        <div>
-             <img style="height: 50px; display: flex; margin: auto;" src={mapLoaction}>
-             <div if:false={isFile}> 
-                <input if:false={isupload} class="custom-file-input slds-text-align_center" type="file" accept={acceptedCSVFormats} style= "margin: auto;" onchange={uploadFileHandler}>
-            </div>
-                <div  class="slds-col slds-size_1-of-1 slds-text-align_center slds-p-top_medium">{uploadfile}</div> 
-            <div if:true={isFile}>
-                <lightning-button if:true={isupload} variant="success" label="Upload" onclick={handleUploadFile} class="slds-m-left_x-small"></lightning-button>
-        
+    <template if:true={isDisabled}>
+        <div class="my-card1 slds-align_absolute-center">
+            <div>
+                <img style="height: 50px; display: flex; margin: auto;" src={mapLoaction}>
+                <div if:false={isFile}> 
+                    <input if:false={isupload} class="custom-file-input slds-text-align_center" type="file" accept={acceptedCSVFormats} style= "margin: auto;" onchange={uploadFileHandler}>
+                </div>
+                    <div  class="slds-col slds-size_1-of-1 slds-text-align_center slds-p-top_medium">{uploadfile}</div> 
+                <div if:true={isFile}>
+                    <lightning-button if:true={isupload} variant="success" label="Upload" onclick={handleUploadFile} class="slds-m-left_x-small"></lightning-button>
+            
+                </div>
             </div>
         </div>
-    </div>
+    </template>
 
     <template if:false={isFile}>
         <div if:false={isupload}>
@@ -54,5 +56,7 @@
             </div>
         </div>
     </template>
-            <!-- <c-my-location records={listData} address={addressAddress}> </c-my-location> -->
+    <div if:true={isActive}>
+        <c-my-location records={listData} address={addressAddress} onrefresh={handleChildRefresh}> </c-my-location>
+    </div>
 </template>
