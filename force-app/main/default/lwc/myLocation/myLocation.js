@@ -162,6 +162,9 @@ export default class MyLocation extends LightningElement {
                     console.log("error", error);
                 })
         })
+        let required = this.template.querySelectorAll('lightning-input').forEach(ele=>{
+            ele
+        })
     }
     handleCancle(){
         this.records.map(item =>{

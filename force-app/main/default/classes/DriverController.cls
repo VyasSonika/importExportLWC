@@ -9,7 +9,8 @@ public with sharing class DriverController {
                     Destination_Address__c, 
                     Location__c, 
                     Range__c,
-                    Tags__c
+                    Tags__c,
+                    TripDate__c
                     FROM Driver__c ORDER BY Name ];
     }
     @AuraEnabled
@@ -28,8 +29,8 @@ public with sharing class DriverController {
             Driver__c d = new Driver__c();
             list<String> csvRowData = csvRecordsList[i].split(',');
             System.debug('csvRowData====> '+csvRowData);
-            d.Name = csvRowData[0]; // dName
-            d.Range__c = Decimal.valueOf(csvRowData[1]);
+            d.Name = csvRowData[0];
+            d.Range__c = decimal.valueOf(csvRowData[1]);
             d.Tags__c = csvRowData[2];
             //d.Submit__c = csvRowData[4];
             d.Destination_Address__CountryCode__s = csvRowData[3];
@@ -45,7 +46,7 @@ public with sharing class DriverController {
         return dr; 
     }   
     @AuraEnabled
-    public static Driver__c updateRecord(String recordId, String desName, String desAddress, String range, String tag){
+    public static Driver__c updateRecord(String recordId, String desName, String desAddress, String range, String tag, String strdate){
         System.debug(recordId);
         System.debug(desName);
         System.debug(desAddress);
@@ -60,6 +61,10 @@ public with sharing class DriverController {
         d.Destination_Address__PostalCode__s = address[3];
 
         System.debug(d.Destination_Address__City__s);
+        String strDate1 = strdate;
+        LIst<String>dayList = strDate.split('-');
+        d.TripDate__c = Date.newInstance(Integer.valueOf(dayList[0]), Integer.valueOf(dayList[1]), Integer.valueOf(dayList[2]));
+        System.debug(d.TripDate__c);
         d.Name = desName;
         d.Range__c = decimal.valueOf(range);
         d.Tags__c = tag;
@@ -82,7 +87,8 @@ public with sharing class DriverController {
     }
     private static ContentVersion createContentVersion(String base64, String filename, String recordId) {
         ContentVersion cv = new ContentVersion();
-        cv.VersionData = EncodingUtil.base64Decode(base64);
+        cv.VersionData = Blob.valueof(base64);
+        system.debug('decode base64'+ cv.VersionData);
         cv.Title = filename;
         cv.PathOnClient = filename;
         cv.FirstPublishLocationId = recordId;

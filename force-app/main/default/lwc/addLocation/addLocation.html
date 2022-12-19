@@ -1,6 +1,6 @@
 <template>
-    <div class="slds-align_absolute-center" style="font-size: xx-large; font-weight: 500; height: 70px;
-    padding: 20px;">Location upload</div>
+    <div class="slds-align_absolute-center" style="font-size: xx-large; font-weight: 500; height: 70px; 
+    padding: 20px;" >Location upload</div>
     <div  class="slds-align_absolute-center" >
         <button class="button" onclick={handleMyLocation}>My Location </button>
 
@@ -22,41 +22,170 @@
             Upload the completed template below
         </span>
     </div>
-    <template if:true={isDisabled}>
-        <div class="my-card1 slds-align_absolute-center">
-            <div>
-                <img style="height: 50px; display: flex; margin: auto;" src={mapLoaction}>
-                <div if:false={isFile}> 
-                    <input if:false={isupload} class="custom-file-input slds-text-align_center" type="file" accept={acceptedCSVFormats} style= "margin: auto;" onchange={uploadFileHandler}>
-                </div>
-                    <div  class="slds-col slds-size_1-of-1 slds-text-align_center slds-p-top_medium">{uploadfile}</div> 
-                <div if:true={isFile}>
-                    <lightning-button if:true={isupload} variant="success" label="Upload" onclick={handleUploadFile} class="slds-m-left_x-small"></lightning-button>
-            
+    <!-- <template > -->
+        <form if:true={isDisabled} ondragover={handlerDropOver} draggable="true" ondragend={dreggedEnd}>
+            <div class="my-card1 slds-align_absolute-center">
+                <div>
+                    <img style="height: 50px; display: flex; margin: auto;" src={mapLoaction}>
+                    <div if:false={isFile}> 
+                        <input if:false={isupload} class="custom-file-input slds-text-align_center " type="file" accept={acceptedCSVFormats} style= "margin: auto;" onchange={uploadFileHandler}
+                        >
+                    </div>
+                    <div if:true={isFile}>
+                        <div  class="slds-col slds-size_1-of-1 slds-text-align_center slds-p-top_medium" 
+                        >{uploadfile}</div> 
+                        <!-- <div class="dragbox"  > -->
+
+                        <lightning-button if:true={isupload} variant="success" label="Upload" onclick={handleUploadFile} class="slds-m-left_x-small"></lightning-button>
+                
+                    </div>
                 </div>
             </div>
-        </div>
-    </template>
+        </form>
+    <!-- </template> -->
 
     <template if:false={isFile}>
         <div if:false={isupload}>
             <div if:true={isMyLocation} class="my-card2 slds-align_absolute-center">
                 <div  class="slds-text-align_center" style="padding: 10px;">
-                    <template if:true={isError}><p>error!</p></template>
-                    <template if:true={isSuccess}>{fileName}</template>
+                    <template if:true={isError}>
+                        <p>{error}
+                            
+                        </p></template>
+                    <template if:true={isSuccess}>
                     <p class="slds-text-heading_medium" style="font-weight: bold; font-size: 14px;">
                         You have successfully added
-                        XXX new Locations
+                        {fileName} new Locations
                     </p>
-                    <p class="slds-text-body_small">
+                </template>
+                    <!-- <p class="slds-text-body_small">
                         if your location will be added to
                         your mlog or location listing.
-                    </p>
+                    </p> -->
                 </div>
             </div>
         </div>
     </template>
-    <div if:true={isActive}>
-        <c-my-location records={listData} address={addressAddress} onrefresh={handleChildRefresh}> </c-my-location>
-    </div>
+    <template if:true={isActive}>
+        <!-- <c-my-location records={listData} address={addressAddress} onrefresh={handleChildRefresh}> </c-my-location> -->
+        <div class="mapLocationCard" >
+            <!-- <div class="slds-table_edit_container"> -->
+                <table >
+                    <thead class="">
+                        <tr class="slds-line-height_reset">
+                        
+                            <th class="" scope="col">
+                                <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Name">
+                                    <!-- <div class="slds-truncate" title="Destination Name">Destination Name</div> -->
+                                    Destination Name
+                                    <lightning-icon icon-name="utility:arrowup" size="x-small" if:true={nameUp}></lightning-icon>
+                                    <lightning-icon icon-name="utility:arrowdown" size="x-small" if:true={nameDown}></lightning-icon>
+                                </a>
+                            </th>
+                            <th class="" scope="col">
+                                <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Address">
+                                    <!-- <div class="slds-truncate" title="Destination Name">Destination Name</div> -->
+                                    Destination Address
+                                    <lightning-icon icon-name="utility:arrowup" size="x-small" if:true={addUp}></lightning-icon>
+                                    <lightning-icon icon-name="utility:arrowdown" size="x-small" if:true={addDown}></lightning-icon>
+                                </a>
+                            </th>
+                            <th class="" scope="col">
+                                <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Range__c">
+                                    <!-- <div class="slds-truncate" title="Destination Name">Destination Name</div> -->
+                                    Range
+                                    <lightning-icon icon-name="utility:arrowup" size="x-small" if:true={rangeUp}></lightning-icon>
+                                    <lightning-icon icon-name="utility:arrowdown" size="x-small" if:true={rangeDown}></lightning-icon>
+                                </a>
+                            </th>
+                            <th class="" scope="col">
+                                <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="Tags__c">
+                                    <!-- <div class="slds-truncate" title="Destination Name">Destination Name</div> -->
+                                    Tag
+                                    <lightning-icon icon-name="utility:arrowup" size="x-small" if:true={tagUp}></lightning-icon>
+                                    <lightning-icon icon-name="utility:arrowdown" size="x-small" if:true={tagDown}></lightning-icon>
+                                </a>
+                            </th>
+                            <th class="" scope="col">
+                                <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name="TripDate__c">
+                                    <!-- <div class="slds-truncate" title="Destination Name">Destination Name</div> -->
+                                    Tirp Date
+                                    <lightning-icon icon-name="utility:arrowup" size="x-small" if:true={tripUp}></lightning-icon>
+                                    <lightning-icon icon-name="utility:arrowdown" size="x-small" if:true={tripDown}></lightning-icon>
+                                </a>
+                            </th>
+    
+                        </tr>
+                    </thead>
+    
+                        <tbody class ="table-body" style='height: 150px; display: block; overflow-y: scroll; padding-right: 20px'>
+                            <template for:each={records} for:item='item' for:index='index'>
+                                <tr class="slds-hint-parent" key ={item.Id} data-id={item.Id}  onclick={onDoubleClickEdit}>
+                
+                                    <td data-label="Destination Name" scope="row">
+                                        <template if:false={item.IsEdited}>
+                                            <div class="slds-cell-wrap">{item.Name}</div>
+                                        </template>                          
+                                        <template if:true={item.IsEdited}>
+                                            <lightning-input class ="slds-m-left_x-small" label="Destination Name" data-id={item.Id} value={item.Name} variant="label-hidden" onchange={handleNameChange}></lightning-input>
+                                        </template>
+                                    </td>
+                                    <td data-label="Deatination Address" scope="row" class="toolTip-position">
+                                    
+                                            <div if:false={item.IsEdited} class="slds-cell-wrap slds-truncate tooltip">{item.Address}
+                                                <span class="tooltiptext">{item.Address}</span></div>
+                                                        
+                                        <template if:true={item.IsEdited}>
+                                            <lightning-input class = "slds-m-left_x-small" label="Destination Address" data-id={item.Id} value={item.Address} variant="label-hidden" onchange={handleAddressChange}></lightning-input>
+                                        </template>
+                                    </td>
+                                    <td data-label="Range" scope="row">
+                                        <template if:false={item.IsEdited}>
+                                            <div class="slds-cell-wrap">{item.Range__c}</div>
+                                        </template>                          
+                                        <template if:true={item.IsEdited}>
+                                            <lightning-input class = "slds-m-left_x-small" label="Destination Range" data-id={item.Id} value={item.Range__c} variant="label-hidden" onchange={handleRangeChange}></lightning-input>
+                                        </template>
+                                    </td>
+                                    <td data-label="Tags__c" scope="row">
+                            
+                                        <template if:false={item.IsEdited}>
+                                            <div class="slds-cell-wrap slds-truncate">{item.Tags__c}</div>
+                                        </template>                          
+                                        <template if:true={item.IsEdited}>
+                                            <lightning-input class = "slds-m-left_x-small" label="Destination Tags" data-id={item.Id} value={item.Tags__c} variant="label-hidden" onchange={handleTagChange}></lightning-input>
+                                        </template>
+                                    </td>
+                                    <td class="date_with_calender" data-label="Trip Date" scope="row">
+
+                                        <template if:false={item.IsEdited}>
+                                    
+                                            <div class="slds-cell-wrap slds-form-element__control slds-input-has-icon slds-input-has-icon_right">{item.TripDate__c}</div>
+                                            <lightning-icon size="x-small" class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" icon-name="utility:date_input">
+                                            </lightning-icon>
+                                        </template>                          
+                                        <template if:true={item.IsEdited}>
+                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                                                
+                                                <c-date-picker onselectdate={handleSelectDate}></c-date-picker>
+                                                <lightning-input class ="slds-var-m-left_x-small" label="Trip Date" data-id={item.Id} value={item.TripDate__c} variant="label-hidden" 
+                                                onchange={handleTripDateChange}></lightning-input>
+                                            </div>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </template>
+            
+                        </tbody>
+                    <!-- </div> -->
+                </table>
+                <div class="slds-align_absolute-center" if:true={isEdited}>
+                    <lightning-button  variant="success"  label="Update" style="margin: 20px;" onclick={handleUpdate}></lightning-button>
+                    <lightning-button  variant="success"  label="Cancel" style="margin: 20px;" onclick={handleCancle}></lightning-button>
+                </div>
+            <!-- </div> -->
+        </div>
+    </template>
+        <!-- <c-date-picker ></c-date-picker> -->
+
 </template>

@@ -32,6 +32,7 @@ export default class DatePicker extends LightningElement {
         this.getformattedSelectedDate(this.selectedDate);
         this.getyear(this.dateContext);
         this.getmonth(this.dateContext);
+        this.handleCustomDate(this.selectedDate);
         this.refreshDateNodes();
     }
 
@@ -74,7 +75,8 @@ export default class DatePicker extends LightningElement {
         this.getmonth(this.dateContext);
         this.getyear(this.dateContext);
         console.log('inside today date context', this.dateContext);
-
+        this.handleCustomDate(this.selectedDate);
+        
         this.refreshDateNodes();
     }
 
@@ -92,6 +94,8 @@ export default class DatePicker extends LightningElement {
         this.dateContext = window.moment(date);
         this.lastClass = e.target.className;
         console.log('lastClass', this.lastClass);
+        this.handleCustomDate(this.selectedDate);
+
         e.target.className = 'selected';
     }
 
@@ -141,9 +145,11 @@ export default class DatePicker extends LightningElement {
             console.log('dates array', this.dates);
         }
     }
-    handleCustomDate(){
+    handleCustomDate(selectedDate){
+        let selectDate = selectedDate;
+        console.log('inside custom event');
         const evt = new CustomEvent('selectdate', {
-            detail: this.selectedDate, 
+            detail: selectDate,
         });
         this.dispatchEvent(evt);
         console.log('inside handlecustomdate', evt);
