@@ -30,9 +30,8 @@
     background-color: aquamarine;
     position: absolute;
     top: 42px;
-    /* bottom: -76px;
     left: 0;
-    right: 0; */
+    right: 0;
     z-index: 2;
 }
 

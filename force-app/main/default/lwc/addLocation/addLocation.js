@@ -11,16 +11,12 @@ import { updateRecord } from 'lightning/uiRecordApi';
 import { loadScript } from 'lightning/platformResourceLoader';
 import excelFileReader from '@salesforce/resourceUrl/sheetjs';
 let records;
-// let XLS = {};
-const valideCol = ['DestinationName', 'Range', 'Tags', 'DeatinationAddress.countryCode', 'DeatinationAddress.street', ' DeatinationAddress.city', 'DeatinationAddress.stateCode', 'DeatinationAddress.postalCode']
 export default class AddLocation extends LightningElement {
     mapLoaction = MapLoaction;
     isMyLocation = false;
     isAddLocation = false;
-    // @track cols = cols;
     @track fileData;
     fileReader;
-    //MAX_SIZE = 500000;
     isFile = false;
     csvString;
     recordId;
@@ -38,10 +34,6 @@ export default class AddLocation extends LightningElement {
     isEdited;
     @track element =[];
     @track fields = [];
-    desName = '';
-    range ='';
-    tag = '';
-    desAddress = '';
     error;
     objExcelToJSON= [];
     @track ready = false;
@@ -56,18 +48,14 @@ export default class AddLocation extends LightningElement {
     addUp;
     addDown;
     hide;
-    show;
+    show = false;
     selectedDate;
-    get loading() { return !this.ready && !this.error; }
+    // get loading() { return !this.ready && !this.error; }
     connectedCallback() {
         // super();
         loadScript(this, excelFileReader + '/sheetjs/sheetmin.js')
         .then(result => {
             console.log('result', result);
-            if(!window.XLSX) {
-                throw new Error('Error loading excelFileReader library (XLSX undefined)');                
-            }
-            this.ready = true;
         })
         .catch(error => {
             this.error = error;
@@ -255,24 +243,14 @@ export default class AddLocation extends LightningElement {
             this.isError =true;
             this.isSuccess= false;
             this.template.querySelector("my-card2");
-            // this.dispatchEvent(
-            //     new ShowToastEvent({
-            //         title: 'Error!!',
-            //         message: this.template.querySelector("my-card2"),
-            //     }),
-            // );
         });
         this.isFile = false;
         this.isupload= false;
         this.isMyLocation = true;
     }
-    // handleChildRefresh(){
-    //     return refreshApex(this.refreshTable);
-
-    // }
     onDoubleClickEdit(e){
-        // this.show = true;
-        console.log("inside onclick", e.target.value);
+        // this.show = false;
+        console.log("inside onclick", e.currentTarget.dataset.id);
         let editedId = e.currentTarget.dataset.id;
         
         this.recordId = editedId;
@@ -282,7 +260,6 @@ export default class AddLocation extends LightningElement {
            
             if(editedId == item.Id){
                 item.IsEdited = true;
-   
             }else{
                 item.IsEdited = false;
             }
@@ -291,6 +268,10 @@ export default class AddLocation extends LightningElement {
         console.log('onDubleClick:', this.records);
         this.isEdited = true;
         // this.show = false;
+        console.log('show value:-', this.show);
+        if(this.show ===true){
+            this.show = false;
+        }
         
     }
     handleNameChange(event){
@@ -340,11 +321,11 @@ export default class AddLocation extends LightningElement {
 
     }
     handleTripDateChange(event){
-        this.show = true;
         this.selectedDate = event.target.value;
         console.log('inside handle trip date', this.selectedDate);
         this.records.map(item =>{
             if(item.IsEdited == true){
+                this.show = true;
                 this.template.querySelector('c-date-picker').style.display = "block";
             }
         })
@@ -484,11 +465,11 @@ export default class AddLocation extends LightningElement {
         console.log('event in handleselect', event.detail);
         this.selectedDate= event.detail;
         let records = JSON.parse(JSON.stringify(this.records));
-        console.log('in side handle selecte', records);
+        // console.log('in side handle selecte', records);
 
         records.map((r) =>{
             if(r.Id == this.recordId ){
-                r.TripDate__c = event.detail;
+                r.TripDate__c = this.selectedDate.format('MM/DD/YY');
                 // r.IsEdited = false;
                 if(r.IsEdited == true){
                     let hide = this.template.querySelector('c-date-picker').style.display = "none";

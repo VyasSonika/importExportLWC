@@ -118,9 +118,9 @@
                         </tr>
                     </thead>
     
-                        <tbody class ="table-body" style='height: 150px; display: block; overflow-y: scroll; padding-right: 20px'>
+                        <tbody class ="table-body" style='height: 350px; display: block; overflow-y: scroll; padding-right: 20px'>
                             <template for:each={records} for:item='item' for:index='index'>
-                                <tr class="slds-hint-parent" key ={item.Id} data-id={item.Id}  onclick={onDoubleClickEdit}>
+                                <tr class="slds-hint-parent" key ={item.Id} data-id={item.Id}  ondblclick={onDoubleClickEdit}>
                 
                                     <td data-label="Destination Name" scope="row">
                                         <template if:false={item.IsEdited}>
@@ -165,12 +165,13 @@
                                             </lightning-icon>
                                         </template>                          
                                         <template if:true={item.IsEdited}>
-                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                                                
-                                                <c-date-picker onselectdate={handleSelectDate}></c-date-picker>
-                                                <lightning-input class ="slds-var-m-left_x-small" label="Trip Date" data-id={item.Id} value={item.TripDate__c} variant="label-hidden" 
-                                                onchange={handleTripDateChange}></lightning-input>
+                                            <div if:true={show} class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                                                <!-- <div if:true={show}> -->
+                                                    <c-date-picker onselectdate={handleSelectDate}></c-date-picker>
                                             </div>
+                                                <lightning-input class ="slds-var-m-left_x-small datePickerClass" label="Trip Date" data-id={item.Id} value={item.TripDate__c} variant="label-hidden" 
+                                                onclick={handleTripDateChange} ></lightning-input>
+                                            <!-- </div> -->
                                         </template>
                                     </td>
                                 </tr>

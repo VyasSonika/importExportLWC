@@ -4,8 +4,8 @@ import { loadScript } from 'lightning/platformResourceLoader';
 
 export default class DatePicker extends LightningElement {
     lastClass;
-    @track dateContext 
-    @track selectedDate 
+    @track dateContext;
+    @track selectedDate;
     @track dates = [];
     @track today;
     year;
@@ -14,25 +14,22 @@ export default class DatePicker extends LightningElement {
     async connectedCallback(){
         await loadScript(this, moment + '/moment/moment.js')
         .then(result=>{
-            console.log('result', result);
+            // console.log('result', result);
             this.loadActivities();
         })
-        
-        
     }
 
     loadActivities(){
-        console.log('load activities');
+        // console.log('load activities');
         this.today = window.moment();
-        console.log('today', this.today);
+        // console.log('today', this.today);
         this.dateContext = window.moment();
-        console.log('date context', this.dateContext);
+        // console.log('date context', this.dateContext);
         this.selectedDate = window.moment();
-        console.log('selectedDate', this.selectedDate);
+        // console.log('selectedDate', this.selectedDate);
         this.getformattedSelectedDate(this.selectedDate);
         this.getyear(this.dateContext);
         this.getmonth(this.dateContext);
-        this.handleCustomDate(this.selectedDate);
         this.refreshDateNodes();
     }
 
@@ -47,16 +44,26 @@ export default class DatePicker extends LightningElement {
     getmonth(datecontext) {
         // return this.dateContext.format('MM');
         this.month = datecontext.format('MMMM');
-        console.log('inside get month', this.month);
+        // console.log('inside get month', this.month);
     }
-
+    @api
+    showChild(){
+        
+        this.template.querySelector('.date').style.display = "block";
+    }
+    @api
+    hideChild(){
+        
+        let hide = this.template.querySelector('.date').style.display = "none";
+        // console.log('inside child component', hide);
+    }
     previousMonth() {
-        console.log('previous button')
+        // console.log('previous button')
         this.dateContext = window.moment(this.dateContext).subtract(1, 'month');
         this.getmonth(this.dateContext);
         this.getyear(this.dateContext);
 
-        console.log('inside previous Month', this.dateContext);
+        // console.log('inside previous Month', this.dateContext);
         this.refreshDateNodes();
     }
 
@@ -67,62 +74,73 @@ export default class DatePicker extends LightningElement {
   
         this.refreshDateNodes();
     }
-    @api
     goToday() {
         this.selectedDate = this.today.format('MM/DD/YY');
-        console.log('inside today selected date', this.selectedDate);
+        // console.log('inside today selected date', this.selectedDate);
         this.dateContext = this.today;
         this.getmonth(this.dateContext);
         this.getyear(this.dateContext);
-        console.log('inside today date context', this.dateContext);
+        // console.log('inside today date context', this.dateContext);
         this.handleCustomDate(this.selectedDate);
         
         this.refreshDateNodes();
     }
-
-    @api
     setSelected(e) {
         const selectedDate = this.template.querySelector('.selected');
-        console.log('selected date', selectedDate);
+        // console.log('selected date', selectedDate);
         if (selectedDate) {
             selectedDate.className = this.lastClass;
         }
 
         const { date } = e.target.dataset;
-        console.log('date', date);
-        this.selectedDate = window.moment(date).format('MM/DD/YY');
+        // console.log('date', date);
+        this.selectedDate = window.moment(date);
         this.dateContext = window.moment(date);
         this.lastClass = e.target.className;
-        console.log('lastClass', this.lastClass);
+        // console.log('lastClass', this.lastClass);
         this.handleCustomDate(this.selectedDate);
 
         e.target.className = 'selected';
+        this.handleCustomDate(this.selectedDate);
+
     }
 
     refreshDateNodes() {
         this.dates = [];
         const currentMoment = window.moment(this.dateContext);
-        console.log('currentMoment', JSON.stringify(currentMoment));
+        // console.log('currentMoment', JSON.stringify(currentMoment));
         // startOf mutates moment, hence clone before use
-        const start = this.dateContext.clone().startOf('month');
+        const start = this.dateContext.startOf('month');
+        // const startYear = this.dateContext.startOf('year');
+        // console.log('start year', startYear);
         // console.log('start', JSON.stringify(start));
         const startWeek = start.isoWeek();
-        // console.log('startWeek', startWeek);
+        // console.log('startWeek', JSON.stringify(startWeek));
         // months do not always have the same number of weeks. eg. February
         const numWeeks =
             window.moment.duration(currentMoment.endOf('month') - start).weeks() + 1;
             // console.log('number weeks', numWeeks);
         for (let week = startWeek; week <= startWeek + numWeeks; week++) {
+        //    console.log('Array(7)', Array(7).fill(0));
             Array(7)
                 .fill(0)
                 .forEach((n, i) => {
                     // console.log('n and i', n, i);
-                    const day = currentMoment
+                    const day = window.moment()
                         .week(week)
                         .startOf('week')
                         .clone()
                         .add(n + i, 'day');
-                    // console.log('day', JSON.stringify(day));
+                    // console.log('day currentMoment', JSON.stringify(currentMoment));
+                    // console.log('day of start week', JSON.stringify(currentMoment.week(week).startOf('week')));
+                    // console.log('day week clone',  JSON.stringify(currentMoment.week(week).startOf('week').clone()));
+                    // console.log('day week clone add',  JSON.stringify(currentMoment.week(week).startOf('week').clone().add(n + i, 'day')));
+                    // console.log('day', day);
+                    // console.log('day of month', day.month());
+                    // console.log('datcontext month', this.dateContext.month());
+                    // console.log('day  isSame today', day.isSame(this.today, 'day'));
+                    // console.log('day  isSame selected date', day.isSame(this.selectedDate, 'day'));
+                    // console.log('day year', day.year());
                     let className = '';
                     
                     if (day.month() === this.dateContext.month()) {
@@ -138,20 +156,20 @@ export default class DatePicker extends LightningElement {
                     }
                     this.dates.push({
                         className,
-                        formatted: day.format('YYYY-MM-DD'),
+                        formatted: day.format('MM/DD/YY'),
                         text: day.format('DD')
                     });
                 });
-            console.log('dates array', this.dates);
+            // console.log('dates array', this.dates);
         }
     }
     handleCustomDate(selectedDate){
-        let selectDate = selectedDate;
+        this.selectedDate = selectedDate;
         console.log('inside custom event');
         const evt = new CustomEvent('selectdate', {
-            detail: selectDate,
+            detail: this.selectedDate,
         });
         this.dispatchEvent(evt);
-        console.log('inside handlecustomdate', evt);
+        console.log('inside handlecustomdate', selectedDate);
     }
 }
