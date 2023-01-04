@@ -1,89 +1,50 @@
 <template>
-    <!-- <div class="slds-align_absolute-center" style="font-size: xx-large; font-weight: 500; height: 70px;
-    padding: 20px;">Location</div>
-    <div  class="slds-align_absolute-center" >
-        <button class="button hello"  onclick={myLocation} >My Location </button>
-        <button class="button" onclick={addLocation} disabled>Add Location</button>
-    </div>
-    
-    <div class="slds-align_absolute-center" style="padding: 10px;">
-        <span style="font-weight: bold;">Step1.</span>
-        <span>
-            Edit location by selecting the field
-        </span>&nbsp;
-    </div> -->
-
-    <div class="mapLocationCard" >
+    <div  class="mapLocationCard">
         <!-- <div class="slds-table_edit_container"> -->
-            <table >
-                <thead class="">
-                    <tr class="">
+            <table class="">
+                <thead class="table_header_thead">
+                    <tr class="slds-line-height_reset">
                     
-                        <th class="" scope="col">
-                            <div class="slds-truncate" title="Destination Name">Destination Name</div>
-                        </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate" title="Deatination Address">Deatination Address</div>
-                        </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate" title="Range">Range</div>
-                        </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate" title="Tags">Tags</div>
-                        </th>
+                        <th class="table_header_th" scope="col">
+                            <template for:each={childColumn} for:item="column">
+                                <th key={column} class="slds-truncate">
+                                <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name={column.fieldName}>
+                                       {column.label}
+                                        <lightning-icon key={column.fieldName} icon-name="utility:arrowup" size="xx-small" if:true={arrowUp}></lightning-icon>
+                                        <lightning-icon key={column.fieldName} icon-name="utility:arrowdown" size="xx-small" if:true={arrowDown}></lightning-icon>
+                                
+                                </a>
+                            </th>
+                        </template>
 
+                        </th>
                     </tr>
                 </thead>
 
-                    <tbody class ="table-body" style='height: 150px; display: block; overflow-y: scroll; padding-right: 20px'>
-                        <template for:each={records} for:item='item' for:index='index'>
-                            <tr class="slds-hint-parent" key ={item.Id} data-id={item.Id}  onclick={onDoubleClickEdit}>
-            
-                                <td data-label="Destination Name" scope="row">
-                                    <template if:false={item.IsEdited}>
-                                        <div class="slds-cell-wrap">{item.Name}</div>
-                                    </template>                          
-                                    <template if:true={item.IsEdited}>
-                                        <lightning-input class ="slds-m-left_x-small" label="Destination Name" data-id={item.Id} value={item.Name} variant="label-hidden" onchange={handleNameChange}></lightning-input>
-                                    </template>
-                                </td>
-                                <td data-label="Deatination Address" scope="row" class="toolTip-position">
-                                
-                                        <div if:false={item.IsEdited} class="slds-cell-wrap slds-truncate tooltip">{item.Address}
-                                            <span class="tooltiptext">{item.Address}</span></div>
-                                                    
-                                    <template if:true={item.IsEdited}>
-                                        <lightning-input class = "slds-m-left_x-small" label="Destination Address" data-id={item.Id} value={item.Address} variant="label-hidden" onchange={handleAddressChange}></lightning-input>
-                                    </template>
-                                </td>
-                                <td data-label="Range" scope="row">
-                                    <template if:false={item.IsEdited}>
-                                        <div class="slds-cell-wrap">{item.Range__c}</div>
-                                    </template>                          
-                                    <template if:true={item.IsEdited}>
-                                        <lightning-input class = "slds-m-left_x-small" label="Destination Range" data-id={item.Id} value={item.Range__c} variant="label-hidden" onchange={handleRangeChange}></lightning-input>
-                                    </template>
-                                </td>
-                                <td data-label="Tags__c" scope="row">
-                        
-                                    <template if:false={item.IsEdited}>
-                                        <div class="slds-cell-wrap slds-truncate">{item.Tags__c}</div>
-                                    </template>                          
-                                    <template if:true={item.IsEdited}>
-                                        <lightning-input class = "slds-m-left_x-small" label="Destination Tags" data-id={item.Id} value={item.Tags__c} variant="label-hidden" onchange={handleTagChange}></lightning-input>
-                                    </template>
-                                </td>
+                    <tbody class ="table-body" style='height: 350px; overflow-y: scroll;'>
+                        <template for:each={childRecords} for:item="row" for:index="index">
+                            <tr class="inputRows slds-truncate" key={row.Id} data-id={row.Id} ondblclick={onDoubleClickEdit}>
+                                <template for:each={row.keyItem} for:item="item" >
+                                    <td key={item} >
+                                        <template if:false={row.IsEdited}>
+                                            <div class="slds-truncate">{item.values}</div>
+                                        </template>    
+                                       <template if:true={row.IsEdited}>
+                                            <lightning-input class ="slds-m-left_x-small" label="Destination Name" data-id={row.Id} value={item.values} 
+                                                                variant="label-hidden" onchange={handleChange}></lightning-input>
+                                        </template>
+
+                                    </td>
+                                </template>
                             </tr>
                         </template>
         
                     </tbody>
-                <!-- </div> -->
+            
             </table>
             <div class="slds-align_absolute-center" if:true={isEdited}>
                 <lightning-button  variant="success"  label="Update" style="margin: 20px;" onclick={handleUpdate}></lightning-button>
                 <lightning-button  variant="success"  label="Cancel" style="margin: 20px;" onclick={handleCancle}></lightning-button>
             </div>
-        <!-- </div> -->
     </div>
-    
 </template>

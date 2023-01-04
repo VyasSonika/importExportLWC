@@ -159,7 +159,7 @@ th, tr, td{
 
 .slds-truncate{
   white-space: nowrap;
-  width: 150px;
+  /* width: 150px; */
   overflow: hidden;
   text-overflow: ellipsis;
 }

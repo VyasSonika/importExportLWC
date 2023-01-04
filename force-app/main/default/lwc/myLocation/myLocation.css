@@ -5,20 +5,7 @@
   /* height: auto; */
   width: auto;
   padding: 20px;
-}
-.button {
-  background-color: #494b49;
-  border: none;
-  color: white;
-  padding: 10px 12px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 15px;
-  margin:10px;
-  border-radius: 7px;
-  cursor: pointer;
-}
+  }
 button:disabled,
 button[disabled]{
   border: 1px solid #999999;
@@ -33,9 +20,11 @@ table {
   flex-flow: column;
   width: auto;
   border-collapse: collapse;
+  position: relative;
+  z-index: 1;
 }
 table tbody {
-  /* body takes all the remaining available space */
+/* body takes all the remaining available space */
   flex: 1 1 auto;
   display: block;
 }
@@ -43,16 +32,19 @@ table tbody tr {
   width: 100%;
 }
 table thead{
-  width: 100%
+  width: 100%;
 }
 table thead, table tbody tr {
   display: table;
   table-layout: fixed;
-
+  
 }
 th, tr, td{
   text-align: left;
   padding: 7px;
+  position: relative;
+  
+  /* z-index: -1; */
 }
 .table-body tr:nth-child(odd){
   background-color: rgb(231, 229, 229);
@@ -76,20 +68,23 @@ th, tr, td{
   top: 35px;
   left: 0%;
 }
-
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  
+.date_with_calender {
+  display: flex;
+  justify-content: space-around;
 }
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
 }
 
 .slds-truncate{
@@ -121,4 +116,18 @@ th, tr, td{
 } 
 .toolTip-position{
   position: relative;
+}
+.dragbox{
+  position: relative;
+
+  text-align: center;
+  height: 200px;
+  width: 100%;
+  min-height: 0px !important;
+}
+.table_header_thead{
+  margin-left: -15px;
+}
+.table_header_th{
+  display: contents;
 }

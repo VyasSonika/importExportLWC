@@ -10,9 +10,19 @@ import { readAsDataURL } from './readFile';
 import { updateRecord } from 'lightning/uiRecordApi';
 import { loadScript } from 'lightning/platformResourceLoader';
 import excelFileReader from '@salesforce/resourceUrl/sheetjs';
-let records;
+let recordsList = [];
+const cols= [
+    {label:'DestinationName', fieldName:'Name', type:'text'},
+    {label:'DestinationAddress', fieldName:'Address', type:'address'},
+    {label:'Range', fieldName:'Range__c', type:'number'},
+    {label:'Tag', fieldName:'Tags__c', type:'text'},
+    {label:'TripDate', fieldName:'TripDate__c', type:'date'},
+
+]
+
 export default class AddLocation extends LightningElement {
     mapLoaction = MapLoaction;
+    @track columns = cols; 
     isMyLocation = false;
     isAddLocation = false;
     @track fileData;
@@ -21,7 +31,6 @@ export default class AddLocation extends LightningElement {
     csvString;
     recordId;
     isupload = false;
-    @track listData=[];
     base64String = [];
     fileContent = '';
     isError = false;
@@ -30,7 +39,7 @@ export default class AddLocation extends LightningElement {
     isDisabled = false;
     isActive = false;
     refreshTable
-    @api records=[];
+    @track records=[];
     isEdited;
     @track element =[];
     @track fields = [];
@@ -50,9 +59,9 @@ export default class AddLocation extends LightningElement {
     hide;
     show = false;
     selectedDate;
-    // get loading() { return !this.ready && !this.error; }
+    dataPassChild = false;
     connectedCallback() {
-        // super();
+
         loadScript(this, excelFileReader + '/sheetjs/sheetmin.js')
         .then(result => {
             console.log('result', result);
@@ -74,11 +83,12 @@ export default class AddLocation extends LightningElement {
         const { error, data } = result;
         if(data){ 
             console.log('data', data);
-            this.records = data;
+            // this.records = data;
             let record12 = JSON.parse(JSON.stringify(data));
             record12.Address= {};
             // console.log(record12);
-            this.records = record12;
+            // this.records = record12;
+             
             this.records = record12.map((r)=>{
                     r.Address = r.Destination_Address__c.countryCode+ ', ' + r.Destination_Address__c.street + ', '+
                     r.Destination_Address__c.city + ', '+ r.Destination_Address__c.stateCode + ', ' +
@@ -97,8 +107,7 @@ export default class AddLocation extends LightningElement {
                     this.recordId = r.Id;
                     return r;
             })
-            console.log('records myLocation', this.records);
-            console.log('isEdited:', this.isEdited);
+            this.dataPassChild = true;
         }
         if(error){
             console.error(error)
@@ -255,8 +264,8 @@ export default class AddLocation extends LightningElement {
         
         this.recordId = editedId;
         console.log('recordId:', this.recordId);
-        records = this.records;
-        records.map(item =>{
+        recordsList = this.records;
+        recordsList.map(item =>{
            
             if(editedId == item.Id){
                 item.IsEdited = true;
@@ -264,7 +273,7 @@ export default class AddLocation extends LightningElement {
                 item.IsEdited = false;
             }
         })
-        this.records = records;
+        this.records = recordsList;
         console.log('onDubleClick:', this.records);
         this.isEdited = true;
         // this.show = false;
@@ -276,48 +285,48 @@ export default class AddLocation extends LightningElement {
     }
     handleNameChange(event){
         this.show = false;
-        records= this.records;
-        records.forEach(ele => {
+        recordsList= this.records;
+        recordsList.forEach(ele => {
             if(ele.Id === event.target.dataset.id ){
                 ele.Name = event.target.value;
             }
             return ele;
         });
-        this.records = records;
+        this.records = recordsList;
         console.log('records in Handler Name', this.records);
     }
     handleAddressChange(event){
-        records = this.records
-        records.forEach(ele => {
+        recordsList = this.records
+        recordsList.forEach(ele => {
             if(ele.Id === event.target.dataset.id ){
                 ele.Address = event.target.value;  
             }
             return ele;
         });
-        this.records = records;
+        this.records = recordsList;
 
     }
     handleRangeChange(event){
-        records = this.records
-        records.forEach(ele => {
+        recordsList = this.records
+        recordsList.forEach(ele => {
             if(ele.Id === event.target.dataset.id ){
                 ele.Range__c = event.target.value;
             }
             return ele;
         });
-        this.records = records;
+        this.records = recordsList;
         // this.show = false;
 
     }
     handleTagChange(event){
-        records = this.records
-        records.forEach(ele => {
+        recordsList = this.records
+        recordsList.forEach(ele => {
             if(ele.Id === event.target.dataset.id ){
                 ele.Tags__c = event.target.value;
             }
             return ele;
         }); 
-        this.records = records;
+        this.records = recordsList;
 
     }
     handleTripDateChange(event){
@@ -330,7 +339,7 @@ export default class AddLocation extends LightningElement {
             }
         })
 
-        this.records = records;
+        this.records = recordsList;
         // this.show = false;
        
     }
@@ -464,10 +473,10 @@ export default class AddLocation extends LightningElement {
     handleSelectDate(event){
         console.log('event in handleselect', event.detail);
         this.selectedDate= event.detail;
-        let records = JSON.parse(JSON.stringify(this.records));
+        recordsList= JSON.parse(JSON.stringify(this.records));
         // console.log('in side handle selecte', records);
 
-        records.map((r) =>{
+        recordsList.map((r) =>{
             if(r.Id == this.recordId ){
                 r.TripDate__c = this.selectedDate.format('MM/DD/YY');
                 // r.IsEdited = false;
@@ -478,7 +487,7 @@ export default class AddLocation extends LightningElement {
             }
            
          })
-         this.records = records;
+         this.records = recordsList;
 
         // this.template.querySelector('c-date-picker').hideChild();
     }
