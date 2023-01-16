@@ -38,9 +38,9 @@ export default class AddLocation extends LightningElement {
     fileName = '';
     isDisabled = false;
     isActive = false;
-    refreshTable
+    refreshTable;
     @track records=[];
-    isEdited;
+    isEdited = false;
     @track element =[];
     @track fields = [];
     error;
@@ -102,8 +102,8 @@ export default class AddLocation extends LightningElement {
                         let dt = new Date( r.TripDate__c );
                         r.TripDate__c = new Intl.DateTimeFormat( 'en-US', {month:'2-digit',day:'2-digit', year:'2-digit'} ).format( dt );
                     }
-                    r.IsEdited = false;
-                    this.isEdited = r.IsEdited;
+                    // r.IsEdited = false;
+                    // this.isEdited = r.IsEdited;
                     this.recordId = r.Id;
                     return r;
             })
@@ -257,95 +257,96 @@ export default class AddLocation extends LightningElement {
         this.isupload= false;
         this.isMyLocation = true;
     }
-    onDoubleClickEdit(e){
-        // this.show = false;
-        console.log("inside onclick", e.currentTarget.dataset.id);
-        let editedId = e.currentTarget.dataset.id;
+    // onDoubleClickEdit(e){
+    //     // this.show = false;
+    //     console.log("inside onclick", e.currentTarget.dataset.id);
+    //     let editedId = e.currentTarget.dataset.id;
         
-        this.recordId = editedId;
-        console.log('recordId:', this.recordId);
-        recordsList = this.records;
-        recordsList.map(item =>{
+    //     this.recordId = editedId;
+    //     console.log('recordId:', this.recordId);
+    //     recordsList = this.records;
+    //     recordsList.map(item =>{
            
-            if(editedId == item.Id){
-                item.IsEdited = true;
-            }else{
-                item.IsEdited = false;
-            }
-        })
-        this.records = recordsList;
-        console.log('onDubleClick:', this.records);
-        this.isEdited = true;
-        // this.show = false;
-        console.log('show value:-', this.show);
-        if(this.show ===true){
-            this.show = false;
-        }
+    //         if(editedId == item.Id){
+    //             item.IsEdited = true;
+    //         }else{
+    //             item.IsEdited = false;
+    //         }
+    //     })
+    //     this.records = recordsList;
+    //     console.log('onDubleClick:', this.records);
+    //     this.isEdited = true;
+    //     // this.show = false;
+    //     console.log('show value:-', this.show);
+    //     if(this.show ===true){
+    //         this.show = false;
+    //     }
         
-    }
-    handleNameChange(event){
-        this.show = false;
-        recordsList= this.records;
-        recordsList.forEach(ele => {
-            if(ele.Id === event.target.dataset.id ){
-                ele.Name = event.target.value;
-            }
-            return ele;
-        });
-        this.records = recordsList;
-        console.log('records in Handler Name', this.records);
-    }
-    handleAddressChange(event){
-        recordsList = this.records
-        recordsList.forEach(ele => {
-            if(ele.Id === event.target.dataset.id ){
-                ele.Address = event.target.value;  
-            }
-            return ele;
-        });
-        this.records = recordsList;
+    // }
+    // handleNameChange(event){
+    //     this.show = false;
+    //     recordsList= this.records;
+    //     recordsList.forEach(ele => {
+    //         if(ele.Id === event.target.dataset.id ){
+    //             ele.Name = event.target.value;
+    //         }
+    //         return ele;
+    //     });
+    //     this.records = recordsList;
+    //     console.log('records in Handler Name', this.records);
+    // }
+    // handleAddressChange(event){
+    //     recordsList = this.records
+    //     recordsList.forEach(ele => {
+    //         if(ele.Id === event.target.dataset.id ){
+    //             ele.Address = event.target.value;  
+    //         }
+    //         return ele;
+    //     });
+    //     this.records = recordsList;
 
-    }
-    handleRangeChange(event){
-        recordsList = this.records
-        recordsList.forEach(ele => {
-            if(ele.Id === event.target.dataset.id ){
-                ele.Range__c = event.target.value;
-            }
-            return ele;
-        });
-        this.records = recordsList;
-        // this.show = false;
+    // }
+    // handleRangeChange(event){
+    //     recordsList = this.records
+    //     recordsList.forEach(ele => {
+    //         if(ele.Id === event.target.dataset.id ){
+    //             ele.Range__c = event.target.value;
+    //         }
+    //         return ele;
+    //     });
+    //     this.records = recordsList;
+    //     // this.show = false;
 
-    }
-    handleTagChange(event){
-        recordsList = this.records
-        recordsList.forEach(ele => {
-            if(ele.Id === event.target.dataset.id ){
-                ele.Tags__c = event.target.value;
-            }
-            return ele;
-        }); 
-        this.records = recordsList;
+    // }
+    // handleTagChange(event){
+    //     recordsList = this.records
+    //     recordsList.forEach(ele => {
+    //         if(ele.Id === event.target.dataset.id ){
+    //             ele.Tags__c = event.target.value;
+    //         }
+    //         return ele;
+    //     }); 
+    //     this.records = recordsList;
 
-    }
-    handleTripDateChange(event){
-        this.selectedDate = event.target.value;
-        console.log('inside handle trip date', this.selectedDate);
-        this.records.map(item =>{
-            if(item.IsEdited == true){
-                this.show = true;
-                this.template.querySelector('c-date-picker').style.display = "block";
-            }
-        })
+    // }
+    // handleTripDateChange(event){
+    //     this.selectedDate = event.target.value;
+    //     console.log('inside handle trip date', this.selectedDate);
+    //     recordsList.map(item =>{
+    //         if(item.IsEdited == true){
+    //             this.show = true;
+    //             this.template.querySelector('c-date-picker').style.display = "block";
+    //         }
+    //     })
 
-        this.records = recordsList;
-        // this.show = false;
+    //     this.records = recordsList;
+    //     // this.show = false;
        
-    }
+    // }
     handleUpdate(){
         console.log('inside handleUpdate', this.records);
-        this.records.forEach(ele=>{
+        recordsList = this.records;
+        recordsList.forEach(ele=>{
             console.log('inside handleUpdate', ele);
             let fields = {Id: ele.Id, Name: ele.Name, Destination_Address__c: ele.Destination_Address__c, Range__c: ele.Range__c, Tags__c:ele.Tags__c,
                            TripDate__c: ele.TripDate__c };
@@ -362,10 +363,14 @@ export default class AddLocation extends LightningElement {
                             variant:"success"
                         })
                     );
-                    this.records.map(item =>{
-                        item.IsEdited = false;
-                        this.isEdited = item.IsEdited;
-                    })
+                    this.records = recordsList;
+                    // console.log('record inside update button', this.records);
+                    this.template.querySelector('c-my-location').notEdited();
+                    this.template.querySelector('c-my-location').handleTableData(this.records);
+
+                    this.isEdited = false;
+                    
+
                     return refreshApex(this.refreshTable);
                     
                 })
@@ -383,79 +388,78 @@ export default class AddLocation extends LightningElement {
         })
     }
     handleCancle(){
-        this.records.map(item =>{                                                   
-            item.IsEdited = false;
-            this.isEdited = item.IsEdited;
-        })
+        console.log('inside cancle button');
+        this.template.querySelector('c-my-location').notEdited();
+        this.isEdited = false;
         return refreshApex(this.refreshTable);
 
     }
-    sortRecs(event) {   
-        this.nameUp = false;
-        this.nameDown = false;
-        this.rangeUp = false;
-        this.rangeDown = false;
-        this.tagUp = false;
-        this.tagDown = false;
-        this.addUp = false;
-        this.addDown = false;
-        let colName = event.target.name;
-        console.log('Column Name is ' + colName);
-        if ( colName ){
-            console.log('colName:', colName)
-            this.sortedDirection = (this.sortedDirection === 'asc' ? 'desc' : 'asc');
-            console.log('sortedDirection:', this.sortedDirection);
-        }else{
-            this.sortedDirection = 'asc'
-            console.log('colName in else:', colName)
-        }
-        let isReverse = this.sortedDirection === 'asc' ? 1 : -1;
-        console.log('isReverse:', isReverse);
+    // sortRecs(event) {   
+    //     this.nameUp = false;
+    //     this.nameDown = false;
+    //     this.rangeUp = false;
+    //     this.rangeDown = false;
+    //     this.tagUp = false;
+    //     this.tagDown = false;
+    //     this.addUp = false;
+    //     this.addDown = false;
+    //     let colName = event.target.name;
+    //     console.log('Column Name is ' + colName);
+    //     if ( colName ){
+    //         console.log('colName:', colName)
+    //         this.sortedDirection = (this.sortedDirection === 'asc' ? 'desc' : 'asc');
+    //         console.log('sortedDirection:', this.sortedDirection);
+    //     }else{
+    //         this.sortedDirection = 'asc'
+    //         console.log('colName in else:', colName)
+    //     }
+    //     let isReverse = this.sortedDirection === 'asc' ? 1 : -1;
+    //     console.log('isReverse:', isReverse);
 
-        switch ( colName ) {
-            case "Name":
-            if ( this.sortedDirection == 'asc' ){
-                this.nameUp = true;
-            }else{
-                this.nameDown = true;
-            }
-            break;
+    //     switch ( colName ) {
+    //         case "Name":
+    //         if ( this.sortedDirection == 'asc' ){
+    //             this.nameUp = true;
+    //         }else{
+    //             this.nameDown = true;
+    //         }
+    //         break;
                 
-            case "Address":
-            if ( this.sortedDirection == 'asc' ){
-                this.addUp = true;
-            }else{
-                this.addDown = true;
-            }
-            break;
+    //         case "Address":
+    //         if ( this.sortedDirection == 'asc' ){
+    //             this.addUp = true;
+    //         }else{
+    //             this.addDown = true;
+    //         }
+    //         break;
             
-            case "Range__c":
-            if ( this.sortedDirection == 'asc' ){
-                this.rangeUp = true;
-            }
-            else{
-                this.rangeDown = true;
-            }
-            break;
+    //         case "Range__c":
+    //         if ( this.sortedDirection == 'asc' ){
+    //             this.rangeUp = true;
+    //         }
+    //         else{
+    //             this.rangeDown = true;
+    //         }
+    //         break;
 
-            case "Tags__c":
-            if ( this.sortedDirection == 'asc' ){
-                this.tagUp = true;
-            }else{
-                this.tagDown = true;
-            }
-            break;
-        }
+    //         case "Tags__c":
+    //         if ( this.sortedDirection == 'asc' ){
+    //             this.tagUp = true;
+    //         }else{
+    //             this.tagDown = true;
+    //         }
+    //         break;
+    //     }
 
-        this.records = JSON.parse( JSON.stringify( this.records ) ).sort( ( a, b ) => {
-            a = a[ colName ] ? a[ colName ].toLowerCase() : 'z'; 
-            console.log('a:', a);
-            b = b[ colName ] ? b[ colName ].toLowerCase() : 'z';
-            return a > b ? 1 * isReverse : -1 * isReverse;
-        });
-        console.log('reciord in up down:', this.records);
+    //     this.records = JSON.parse( JSON.stringify( this.records ) ).sort( ( a, b ) => {
+    //         a = a[ colName ] ? a[ colName ].toLowerCase() : 'z'; 
+    //         console.log('a:', a);
+    //         b = b[ colName ] ? b[ colName ].toLowerCase() : 'z';
+    //         return a > b ? 1 * isReverse : -1 * isReverse;
+    //     });
+    //     console.log('reciord in up down:', this.records);
 
-    }
+    // }
     
     handlerDropOver(evt){
         // this.isDisabled = false
@@ -470,25 +474,47 @@ export default class AddLocation extends LightningElement {
 
     }
    
-    handleSelectDate(event){
-        console.log('event in handleselect', event.detail);
-        this.selectedDate= event.detail;
-        recordsList= JSON.parse(JSON.stringify(this.records));
-        // console.log('in side handle selecte', records);
+    // handleSelectDate(event){
+    //     console.log('event in handleselect', event.detail);
+    //     this.selectedDate= event.detail;
+    //     recordsList= JSON.parse(JSON.stringify(this.records));
+    //     // console.log('in side handle selecte', records);
 
-        recordsList.map((r) =>{
-            if(r.Id == this.recordId ){
-                r.TripDate__c = this.selectedDate.format('MM/DD/YY');
-                // r.IsEdited = false;
-                if(r.IsEdited == true){
-                    let hide = this.template.querySelector('c-date-picker').style.display = "none";
-                    console.log('inside if bolck', hide);
-                }
-            }
+    //     recordsList.map((r) =>{
+    //         if(r.Id == this.recordId ){
+    //             r.TripDate__c = this.selectedDate.format('MM/DD/YY');
+    //             // r.IsEdited = false;
+    //             if(r.IsEdited == true){
+    //                 let hide = this.template.querySelector('c-date-picker').style.display = "none";
+    //                 console.log('inside if bolck', hide);
+    //             }
+    //         }
            
-         })
-         this.records = recordsList;
+    //      })
+    //      this.records = recordsList;
 
-        // this.template.querySelector('c-date-picker').hideChild();
+    //     // this.template.querySelector('c-date-picker').hideChild();
+    // }
+    handleValueChange(evt){
+        this.isEdited = true;
+        console.log('value coming from child', evt.detail.record);
+
+        let fieldValue = evt.detail.record;
+        let fieldName = evt.detail.fieldName;
+        let recordId = evt.detail.recordId;
+        // recordsList = evt.detail.records;
+        console.log('inside handleValueChange:--', );
+        // console.log('value coming from child', this.records.forEach(item=> item.fieldName));
+        recordsList = this.records;
+        recordsList.map(item =>{
+            if(item.Id == recordId){
+                console.log('inside if block', recordId);
+                item = Object.assign(item, {[fieldName]:fieldValue})
+
+            }
+        })
+        this.records = recordsList;
+        console.log('value coming from child', this.records);
+
     }
 }

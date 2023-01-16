@@ -6,12 +6,7 @@
   width: auto;
   padding: 20px;
   }
-button:disabled,
-button[disabled]{
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-}
+
 .table-container {
   height: 10em;
 }
@@ -62,11 +57,11 @@ th, tr, td{
   color: #fff;
   text-align: center;
   border-radius: 6px;
-  padding: 10px;
+  padding: 3px;
   position: absolute;
   z-index: 1;
-  top: 35px;
-  left: 0%;
+  top: 8px;
+  left: 16%;
 }
 .date_with_calender {
   display: flex;

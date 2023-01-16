@@ -22,17 +22,26 @@
                 </thead>
 
                     <tbody class ="table-body" style='height: 350px; overflow-y: scroll;'>
-                        <template for:each={childRecords} for:item="row" for:index="index">
-                            <tr class="inputRows slds-truncate" key={row.Id} data-id={row.Id} ondblclick={onDoubleClickEdit}>
+                        <template for:each={pagRecords} for:item="row" for:index="index">
+                            <tr class="slds-truncate" key={row.Id} data-id={row.Id} ondblclick={onDoubleClickEdit}>
                                 <template for:each={row.keyItem} for:item="item" >
-                                    <td key={item} >
+                                    <td key={item} class= "">
                                         <template if:false={row.IsEdited}>
-                                            <div class="slds-truncate">{item.values}</div>
+                                            <div class="slds-truncate tooltip">{item.values}
+                                                <span class="tooltiptext">{item.values}</span>
+                                                 <!-- <lightning-icon size="x-small" class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" icon-name="utility:date_input">
+                                                </lightning-icon> -->
+                                            </div>
                                         </template>    
                                        <template if:true={row.IsEdited}>
+                                            <div if:true={showDatePicker} class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right ">
+                                                    <c-date-picker onselectdate={handleSelectDate}></c-date-picker>
+                                            </div>
                                             <lightning-input class ="slds-m-left_x-small" label="Destination Name" data-id={row.Id} value={item.values} 
-                                                                variant="label-hidden" onchange={handleChange}></lightning-input>
+                                                name={item.keys} data-type={childColumn.type} variant="label-hidden" onchange={handleChange}
+                                                ></lightning-input>
                                         </template>
+                                        
 
                                     </td>
                                 </template>
@@ -42,9 +51,8 @@
                     </tbody>
             
             </table>
-            <div class="slds-align_absolute-center" if:true={isEdited}>
-                <lightning-button  variant="success"  label="Update" style="margin: 20px;" onclick={handleUpdate}></lightning-button>
-                <lightning-button  variant="success"  label="Cancel" style="margin: 20px;" onclick={handleCancle}></lightning-button>
-            </div>
+            <lightning-card>
+                <c-paginator records={childRecords} onupdate={updateDataHandler}></c-paginator>
+            </lightning-card>
     </div>
 </template>
