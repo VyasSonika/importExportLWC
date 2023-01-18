@@ -2,6 +2,7 @@ import { LightningElement, api, track } from 'lwc';
 import moment from '@salesforce/resourceUrl/momentjs';
 import { loadScript } from 'lightning/platformResourceLoader';
 
+
 export default class DatePicker extends LightningElement {
     lastClass;
     @track dateContext;
@@ -46,17 +47,17 @@ export default class DatePicker extends LightningElement {
         this.month = datecontext.format('MMMM');
         // console.log('inside get month', this.month);
     }
-    @api
-    showChild(){
+    // @api
+    // showChild(){
         
-        this.template.querySelector('.date').style.display = "block";
-    }
-    @api
-    hideChild(){
+    //     this.template.querySelector('.date').style.display = "block";
+    // }
+    // @api
+    // hideChild(){
         
-        let hide = this.template.querySelector('.date').style.display = "none";
-        // console.log('inside child component', hide);
-    }
+    //     let hide = this.template.querySelector('.date').style.display = "none";
+    //     // console.log('inside child component', hide);
+    // }
     previousMonth() {
         // console.log('previous button')
         this.dateContext = window.moment(this.dateContext).subtract(1, 'month');
@@ -76,7 +77,7 @@ export default class DatePicker extends LightningElement {
     }
     goToday() {
         this.selectedDate = this.today.format('MM/DD/YY');
-        // console.log('inside today selected date', this.selectedDate);
+        console.log('inside today selected date', this.selectedDate);
         this.dateContext = this.today;
         this.getmonth(this.dateContext);
         this.getyear(this.dateContext);
@@ -93,12 +94,12 @@ export default class DatePicker extends LightningElement {
         }
 
         const { date } = e.target.dataset;
-        // console.log('date', date);
+        console.log('date', date);
         this.selectedDate = window.moment(date);
         this.dateContext = window.moment(date);
         this.lastClass = e.target.className;
-        // console.log('lastClass', this.lastClass);
-        this.handleCustomDate(this.selectedDate);
+        console.log('lastClass', this.lastClass);
+        // this.handleCustomDate(this.selectedDate);
 
         e.target.className = 'selected';
         this.handleCustomDate(this.selectedDate);
@@ -142,17 +143,25 @@ export default class DatePicker extends LightningElement {
                     // console.log('day  isSame selected date', day.isSame(this.selectedDate, 'day'));
                     // console.log('day year', day.year());
                     let className = '';
-                    
+                    // console.log('day of month:-', day.month());
+                    // console.log('date of context:-', this.dateContext.month());
                     if (day.month() === this.dateContext.month()) {
                         if (day.isSame(this.today, 'day')) {
                             className = 'today';
+                            // console.log('class name today');
                         } else if (day.isSame(this.selectedDate, 'day')) {
                             className = 'selected';
+                            // console.log('class name seleted');
+
                         } else {
                             className = 'date';
+                            // console.log('class name date');
+
                         }
                     } else {
                         className = 'padder';
+                        // console.log('class name padder');
+
                     }
                     this.dates.push({
                         className,
@@ -165,11 +174,12 @@ export default class DatePicker extends LightningElement {
     }
     handleCustomDate(selectedDate){
         this.selectedDate = selectedDate;
-        console.log('inside custom event');
+        console.log('inside custom event',this.selectedDate);
         const evt = new CustomEvent('selectdate', {
             detail: this.selectedDate,
         });
+        console.log('inside handlecustomdate', evt);
+
         this.dispatchEvent(evt);
-        console.log('inside handlecustomdate', selectedDate);
     }
 }

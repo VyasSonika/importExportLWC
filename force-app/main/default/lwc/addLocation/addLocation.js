@@ -367,10 +367,7 @@ export default class AddLocation extends LightningElement {
                     // console.log('record inside update button', this.records);
                     this.template.querySelector('c-my-location').notEdited();
                     this.template.querySelector('c-my-location').handleTableData(this.records);
-
                     this.isEdited = false;
-                    
-
                     return refreshApex(this.refreshTable);
                     
                 })
