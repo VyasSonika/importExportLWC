@@ -93,14 +93,10 @@ export default class AddLocation extends LightningElement {
                     r.Address = r.Destination_Address__c.countryCode+ ', ' + r.Destination_Address__c.street + ', '+
                     r.Destination_Address__c.city + ', '+ r.Destination_Address__c.stateCode + ', ' +
                     r.Destination_Address__c.postalCode;
-                    // this.desName = r.Name;
-                    // this.range = r.Range__c;
-                    // this.tag = r.Tags__c;
-                    // this.desAddress = r.Address;
                     if (r.TripDate__c ) {
                     
                         let dt = new Date( r.TripDate__c );
-                        r.TripDate__c = new Intl.DateTimeFormat( 'en-US', {month:'2-digit',day:'2-digit', year:'2-digit'} ).format( dt );
+                        r.TripDate__c = new Intl.DateTimeFormat( 'en-US', {month:'2-digit',day:'2-digit', year:'2-digit'} ).format(dt);
                     }
                     // r.IsEdited = false;
                     // this.isEdited = r.IsEdited;
@@ -347,7 +343,7 @@ export default class AddLocation extends LightningElement {
         console.log('inside handleUpdate', this.records);
         recordsList = this.records;
         recordsList.forEach(ele=>{
-            console.log('inside handleUpdate', ele);
+            console.log('trip date update:-', ele.TripDate__c);
             let fields = {Id: ele.Id, Name: ele.Name, Destination_Address__c: ele.Destination_Address__c, Range__c: ele.Range__c, Tags__c:ele.Tags__c,
                            TripDate__c: ele.TripDate__c };
             let recordInput = { fields };
@@ -506,7 +502,8 @@ export default class AddLocation extends LightningElement {
         recordsList.map(item =>{
             if(item.Id == recordId){
                 console.log('inside if block', recordId);
-                item = Object.assign(item, {[fieldName]:fieldValue})
+                item = Object.assign(item, {[fieldName]:fieldValue});
+                console.log('item inside handlevaluechange', item);
 
             }
         })

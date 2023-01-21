@@ -2,7 +2,6 @@ import { LightningElement, api, track } from 'lwc';
 import moment from '@salesforce/resourceUrl/momentjs';
 import { loadScript } from 'lightning/platformResourceLoader';
 
-
 export default class DatePicker extends LightningElement {
     lastClass;
     @track dateContext;
@@ -47,17 +46,17 @@ export default class DatePicker extends LightningElement {
         this.month = datecontext.format('MMMM');
         // console.log('inside get month', this.month);
     }
-    // @api
-    // showChild(){
-        
-    //     this.template.querySelector('.date').style.display = "block";
-    // }
-    // @api
-    // hideChild(){
-        
-    //     let hide = this.template.querySelector('.date').style.display = "none";
-    //     // console.log('inside child component', hide);
-    // }
+    @api
+    showChild(){
+         console.log('inside showchild component');
+        // this.template.querySelector('.date').style.display = "block";
+    }
+    @api
+    hideChild(){
+         console.log('inside hidechild component');
+        // this.template.querySelector('.date').style.display = "none";
+       
+    }
     previousMonth() {
         // console.log('previous button')
         this.dateContext = window.moment(this.dateContext).subtract(1, 'month');
@@ -95,7 +94,7 @@ export default class DatePicker extends LightningElement {
 
         const { date } = e.target.dataset;
         console.log('date', date);
-        this.selectedDate = window.moment(date);
+        this.selectedDate = window.moment(date).format('MM/DD/YY');
         this.dateContext = window.moment(date);
         this.lastClass = e.target.className;
         console.log('lastClass', this.lastClass);

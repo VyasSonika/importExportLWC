@@ -51,14 +51,21 @@ export default class MyLocation extends LightningElement {
             if(editedId == item.Id){
                 console.log('inside if block:--');
                 item.IsEdited = true;
+                
             }else{
                 item.IsEdited = false;
                 // console.log('else block:--')
             }
+            item.keyItem.forEach(key =>{
+                if(key.isDate == true){
+                    key.isDate = false;
+                }
+                // return key;
+            })
         })
         this.childRecords = recordsList;
         // this.pagRecords = this.childRecord;
-        // console.log('onDubleClick:', this.childRecord);
+        console.log('onDubleClick:', this.childRecords);
         // console.log('show value:-', this.showDatePicker);
         // this.showDatePicker = true;
 
@@ -81,8 +88,7 @@ export default class MyLocation extends LightningElement {
         let fieldType = evt.target.dataset.type;
         console.log('field type:--', fieldType);
         console.log('field vales:--', this.fieldValues);
-        
-        // console.log('update value', JSON.parse(JSON.stringify(this.childRecords)));
+        console.log('update value', JSON.parse(JSON.stringify(this.childRecords)));
         recordsList =  JSON.parse(JSON.stringify(this.childRecords));
         recordsList.forEach(ele=>{
             if(ele.Id === this.recordId){
@@ -92,13 +98,18 @@ export default class MyLocation extends LightningElement {
                         console.log('item:--', item);
                         this.updateData(this.fieldName, item.values);
                    }
+                   
                 })
-                
             }
+            console.log(this.template.querySelectorAll('#id'));
+            // if(ele.IsEdited === true && fieldType === 'date'){
+            //     console.log('inside handle change for show datepicker');
+            //     this.template.querySelector('c-date-picker').showChild();
+            // }
             return ele;
         })
         console.log('updated value:--', recordsList);
-
+        
         this.childRecords = [...recordsList];
         this.pagRecords = this.childRecords
         console.log('updated value:--', this.pagRecords);
@@ -154,15 +165,15 @@ export default class MyLocation extends LightningElement {
                 ele.keyItem.forEach(item=>{
                    if(item.type === 'date'){
                         item.values = this.selectedDate;
-                        console.log('item:--', item);
-                        ele.IsEdited = true;
+                        console.log('isEdited value', ele.IsEdited);
                         this.updateData(item.keys, item.values);
+                        if(ele.IsEdited == true){
+                            console.log('hide date picker')
+                            this.template.querySelector('c-date-picker').style.display = "none";
+                        }
                    }
                 })
                 return ele; 
-            }else{
-                ele.IsEdited = false;
-
             }
         })
          console.log('updated value:--', recordsList);
@@ -213,7 +224,7 @@ export default class MyLocation extends LightningElement {
         }) 
             console.log('final array1233:--', newArray);
         this.pagRecords = JSON.parse(JSON.stringify(newArray));
-        this.pagRecords = this.childRecords;
+        // this.pagRecords = this.childRecords;
         console.log('final array:--', this.childRecords);
         // this.childRecords = this.pagRecords;
 
