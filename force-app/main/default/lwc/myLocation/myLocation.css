@@ -84,7 +84,7 @@ th, tr, td{
 
 .slds-truncate{
   white-space: nowrap;
-  width: 150px;
+  width: 174px;
   overflow: hidden;
   text-overflow: ellipsis;
 }

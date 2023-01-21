@@ -34,7 +34,7 @@ export default class DatePicker extends LightningElement {
     }
 
     getformattedSelectedDate(selectedDate) {
-         this.selectedDate= selectedDate.format('MM/DD/YY');
+         this.selectedDate= selectedDate.format('MM/DD/YYYY');
     }
     getyear(datecontext) {
         // return console.log('inside get',this.dateContext);
@@ -75,7 +75,7 @@ export default class DatePicker extends LightningElement {
         this.refreshDateNodes();
     }
     goToday() {
-        this.selectedDate = this.today.format('MM/DD/YY');
+        this.selectedDate = this.today.format('MM/DD/YYYY');
         console.log('inside today selected date', this.selectedDate);
         this.dateContext = this.today;
         this.getmonth(this.dateContext);
@@ -94,7 +94,7 @@ export default class DatePicker extends LightningElement {
 
         const { date } = e.target.dataset;
         console.log('date', date);
-        this.selectedDate = window.moment(date).format('MM/DD/YY');
+        this.selectedDate = window.moment(date).format('MM/DD/YYYY');
         this.dateContext = window.moment(date);
         this.lastClass = e.target.className;
         console.log('lastClass', this.lastClass);
@@ -164,7 +164,7 @@ export default class DatePicker extends LightningElement {
                     }
                     this.dates.push({
                         className,
-                        formatted: day.format('MM/DD/YY'),
+                        formatted: day.format('MM/DD/YYYY'),
                         text: day.format('DD')
                     });
                 });

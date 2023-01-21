@@ -60,6 +60,8 @@ export default class MyLocation extends LightningElement {
                 if(key.isDate == true){
                     key.isDate = false;
                 }
+                console.log('keysss', key)
+                // console.log()
                 // return key;
             })
         })
@@ -94,6 +96,10 @@ export default class MyLocation extends LightningElement {
             if(ele.Id === this.recordId){
                 ele.keyItem.forEach(item=>{
                    if(item.keys == this.fieldName){
+                        if(fieldType === 'date'){
+                            console.log('inside if block field type:-', fieldType);
+                            item.isDate = true;
+                        }
                         item.values = this.fieldValues;
                         console.log('item:--', item);
                         this.updateData(this.fieldName, item.values);
@@ -101,11 +107,6 @@ export default class MyLocation extends LightningElement {
                    
                 })
             }
-            console.log(this.template.querySelectorAll('#id'));
-            // if(ele.IsEdited === true && fieldType === 'date'){
-            //     console.log('inside handle change for show datepicker');
-            //     this.template.querySelector('c-date-picker').showChild();
-            // }
             return ele;
         })
         console.log('updated value:--', recordsList);
@@ -114,6 +115,28 @@ export default class MyLocation extends LightningElement {
         this.pagRecords = this.childRecords
         console.log('updated value:--', this.pagRecords);
     }
+    // handleDateChange(evt){
+    //     let fieldName = evt.target.name;
+        
+    //     let fieldType = evt.target.dataset.type;
+    //     console.log('fieldType', fieldType);
+    //     console.log('handledate change', evt);
+    //     recordsList = this.childRecords
+    //     recordsList.forEach(ele=>{
+    //         if(ele.Id === this.recordId){
+    //             ele.keyItem.forEach(item=>{
+    //                 if(fieldType === 'date' && fieldName === item.keys){
+    //                     console.log('item:--', item);
+    //                     item.isDate = true;
+    //                 }
+    //             })
+    //         }
+    //         return ele;
+    //     })
+    //     this.childRecords = recordsList;
+    //     console.log('record check here', this.childRecords);
+
+    // }
     updateData(fieldName, fieldValues){
         console.log('fieldname and fieldvalues:-', fieldName, fieldValues);
         this.dispatchEvent(new CustomEvent('valuechange',{ 
@@ -168,7 +191,7 @@ export default class MyLocation extends LightningElement {
                         console.log('isEdited value', ele.IsEdited);
                         this.updateData(item.keys, item.values);
                         if(ele.IsEdited == true){
-                            console.log('hide date picker')
+                            console.log('hide date picker', this.template.querySelector('c-date-picker'));
                             this.template.querySelector('c-date-picker').style.display = "none";
                         }
                    }
@@ -210,25 +233,31 @@ export default class MyLocation extends LightningElement {
             newArray.map(item=>{
                 item.keyItem.forEach(key=>{
                     if(col.fieldName === key.keys){
-                    // console.log(col.type);
-                    key.type = col.type;
-                    if(key.type == 'date'){
-                        key.isDate = true;
-                    }
-                   
-                    // console.log(key);
+                        // console.log(col.type);
+                        key.type = col.type;
+                        if(key.type === 'date'){
+                            key.isDate = true;
+                            key.values = this.convert(key.values);
+                        }
+                    console.log('values change:-', key);
                     }
                 })
-               
+            //    if(!(Object.keys(item).includes('IsEdited'))){
+            //         console.log('add isedited in record:-', item.IsEdited = true);
+            //    }
             })
         }) 
             console.log('final array1233:--', newArray);
-        this.pagRecords = JSON.parse(JSON.stringify(newArray));
-        // this.pagRecords = this.childRecords;
+        this.childRecords = JSON.parse(JSON.stringify(newArray));
         console.log('final array:--', this.childRecords);
-        // this.childRecords = this.pagRecords;
-
     }
+    convert(str) {
+        let date = new Date(str),
+          mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+          day = ("0" + date.getDate()).slice(-2),
+          year = date.getFullYear();
+        return [mnth, day, year].join("/");
+      }
     updateDataHandler(event) {
         console.log('page records:--', this.pagRecords)
         this.pagRecords = [...event.detail.records];

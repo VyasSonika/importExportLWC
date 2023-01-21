@@ -93,13 +93,12 @@ export default class AddLocation extends LightningElement {
                     r.Address = r.Destination_Address__c.countryCode+ ', ' + r.Destination_Address__c.street + ', '+
                     r.Destination_Address__c.city + ', '+ r.Destination_Address__c.stateCode + ', ' +
                     r.Destination_Address__c.postalCode;
-                    if (r.TripDate__c ) {
+                    // if (r.TripDate__c ) {
                     
-                        let dt = new Date( r.TripDate__c );
-                        r.TripDate__c = new Intl.DateTimeFormat( 'en-US', {month:'2-digit',day:'2-digit', year:'2-digit'} ).format(dt);
-                    }
-                    // r.IsEdited = false;
-                    // this.isEdited = r.IsEdited;
+                    //     let dt = new Date( r.TripDate__c );
+                    //     r.TripDate__c = new Intl.DateTimeFormat( 'en-US', {month:'2-digit',day:'2-digit', year:'2-digit'} ).format(dt);
+                    // }
+                    
                     this.recordId = r.Id;
                     return r;
             })
@@ -343,6 +342,7 @@ export default class AddLocation extends LightningElement {
         console.log('inside handleUpdate', this.records);
         recordsList = this.records;
         recordsList.forEach(ele=>{
+
             console.log('trip date update:-', ele.TripDate__c);
             let fields = {Id: ele.Id, Name: ele.Name, Destination_Address__c: ele.Destination_Address__c, Range__c: ele.Range__c, Tags__c:ele.Tags__c,
                            TripDate__c: ele.TripDate__c };
@@ -504,8 +504,12 @@ export default class AddLocation extends LightningElement {
                 console.log('inside if block', recordId);
                 item = Object.assign(item, {[fieldName]:fieldValue});
                 console.log('item inside handlevaluechange', item);
-
             }
+            let date = new Date(item.TripDate__c)
+            let newDate = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)) + "-" + ("0" + date.getDate());
+            item.TripDate__c = newDate;
+            console.log('form_dt:-', newDate); 
+                
         })
         this.records = recordsList;
         console.log('value coming from child', this.records);
