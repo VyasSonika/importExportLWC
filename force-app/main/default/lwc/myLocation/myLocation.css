@@ -82,7 +82,7 @@ th, tr, td{
     visibility: visible;
 }
 
-.slds-truncate{
+.truncateClass{
   white-space: nowrap;
   width: 174px;
   overflow: hidden;

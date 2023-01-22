@@ -33,23 +33,23 @@ export default class MyLocation extends LightningElement {
         childColumn.forEach(t=>{
             typeValue.push(t.type);
         })
-        console.log('type value:--', typeValue);
+        // console.log('type value:--', typeValue);
         this.handleTableData(this.childRecords);
     }
     
     onDoubleClickEdit(e){
         // console.log('event:---', e);
         // this.showDatePicker = true;
-        console.log("inside onclick", e.currentTarget.dataset.id);
+        // console.log("inside onclick", e.currentTarget.dataset.id);
         let editedId = e.currentTarget.dataset.id;
         this.recordId = editedId;
-        console.log('recordId:', this.recordId);
-        recordsList = this.childRecords;
-        console.log('recordsList:--', recordsList);
+        // console.log('recordId:', this.recordId);
+        recordsList = JSON.parse(JSON.stringify(this.childRecords));
+        // console.log('recordsList:--', recordsList);
         recordsList.map(item =>{
             item.IsEdited = false;
             if(editedId == item.Id){
-                console.log('inside if block:--');
+                // console.log('inside if block:--');
                 item.IsEdited = true;
                 
             }else{
@@ -60,14 +60,14 @@ export default class MyLocation extends LightningElement {
                 if(key.isDate == true){
                     key.isDate = false;
                 }
-                console.log('keysss', key)
+                // console.log('keysss', key)
                 // console.log()
                 // return key;
             })
         })
         this.childRecords = recordsList;
         // this.pagRecords = this.childRecord;
-        console.log('onDubleClick:', this.childRecords);
+        // console.log('onDubleClick:', this.childRecords);
         // console.log('show value:-', this.showDatePicker);
         // this.showDatePicker = true;
 
@@ -77,19 +77,19 @@ export default class MyLocation extends LightningElement {
     @api 
     notEdited(){
         console.log('from child com. not edited', this.childRecords);
-        recordsList = this.childRecords;
+        recordsList = JSON.parse(JSON.stringify(this.childRecords));
         recordsList.map(item=>{
            item.IsEdited = false;
         })
         this.childRecords = recordsList;
-        console.log('inside notedited childRcords', this.childRecords);
+        // console.log('inside notedited childRcords', this.childRecords);
     }
     handleChange(evt){
         this.fieldValues = evt.target.value;
         this.fieldName = evt.target.name;
         let fieldType = evt.target.dataset.type;
-        console.log('field type:--', fieldType);
-        console.log('field vales:--', this.fieldValues);
+        // console.log('field type:--', fieldType);
+        // console.log('field vales:--', this.fieldValues);
         console.log('update value', JSON.parse(JSON.stringify(this.childRecords)));
         recordsList =  JSON.parse(JSON.stringify(this.childRecords));
         recordsList.forEach(ele=>{
@@ -97,11 +97,11 @@ export default class MyLocation extends LightningElement {
                 ele.keyItem.forEach(item=>{
                    if(item.keys == this.fieldName){
                         if(fieldType === 'date'){
-                            console.log('inside if block field type:-', fieldType);
+                            // console.log('inside if block field type:-', fieldType);
                             item.isDate = true;
                         }
                         item.values = this.fieldValues;
-                        console.log('item:--', item);
+                        // console.log('item:--', item);
                         this.updateData(this.fieldName, item.values);
                    }
                    
@@ -112,8 +112,8 @@ export default class MyLocation extends LightningElement {
         console.log('updated value:--', recordsList);
         
         this.childRecords = [...recordsList];
-        this.pagRecords = this.childRecords
-        console.log('updated value:--', this.pagRecords);
+        // this.pagRecords = this.childRecords
+        // console.log('updated value:--', this.pagRecords);
     }
     // handleDateChange(evt){
     //     let fieldName = evt.target.name;
@@ -138,7 +138,7 @@ export default class MyLocation extends LightningElement {
 
     // }
     updateData(fieldName, fieldValues){
-        console.log('fieldname and fieldvalues:-', fieldName, fieldValues);
+        // console.log('fieldname and fieldvalues:-', fieldName, fieldValues);
         this.dispatchEvent(new CustomEvent('valuechange',{ 
             detail:{ 
                 record: fieldValues, fieldName: fieldName, recordId:this.recordId,
@@ -149,18 +149,18 @@ export default class MyLocation extends LightningElement {
     sortRecs(event) {   
         let colName = event.target.name;
     
-        console.log('target event:--', event.target.name);
+        // console.log('target event:--', event.target.name);
         if ( colName ){
-            console.log('colName:', colName)
+            // console.log('colName:', colName)
             this.sortedDirection = (this.sortedDirection === 'asc' ? 'desc' : 'asc');
-            console.log('sortedDirection:', this.sortedDirection);
+            // console.log('sortedDirection:', this.sortedDirection);
         }else{
             this.sortedDirection = 'asc'
-            console.log('colName in else:', colName)
+            // console.log('colName in else:', colName)
         }
         // cheking reverse direction
         let isReverse = this.sortedDirection === 'asc' ? 1 : -1;
-        console.log('isReverse:', isReverse);
+        // console.log('isReverse:', isReverse);
         
 
         let parseData = JSON.parse(JSON.stringify(this.childRecords));
@@ -179,30 +179,30 @@ export default class MyLocation extends LightningElement {
         // this.childRecord = this.pagRecords;
     }    
     handleSelectDate(event){
-        console.log('event in handleselect', event.detail);
+        // console.log('event in handleselect', event.detail);
         this.selectedDate= event.detail;
         recordsList = JSON.parse(JSON.stringify(this.childRecords));
-        console.log('records list form handleselected date:-', recordsList);
+        // console.log('records list form handleselected date:-', recordsList);
         recordsList.forEach(ele=>{
             if(ele.Id === this.recordId){
                 ele.keyItem.forEach(item=>{
                    if(item.type === 'date'){
                         item.values = this.selectedDate;
-                        console.log('isEdited value', ele.IsEdited);
+                        // console.log('isEdited value', ele.IsEdited);
                         this.updateData(item.keys, item.values);
                         if(ele.IsEdited == true){
-                            console.log('hide date picker', this.template.querySelector('c-date-picker'));
-                            this.template.querySelector('c-date-picker').style.display = "none";
+                            // console.log('hide date picker', this.template.querySelector('c-date-picker'));
+                            // this.template.querySelector('c-date-picker').style.display = "none";
+                            item.isDate = false;
                         }
                    }
                 })
                 return ele; 
             }
         })
-         console.log('updated value:--', recordsList);
+        //  console.log('updated value:--', recordsList);
 
         this.childRecords = recordsList;
-        // this.childRecord = this.pagRecords;
     }
     @api
     handleTableData(data){
@@ -211,7 +211,6 @@ export default class MyLocation extends LightningElement {
         data.forEach(item=>{
 
             item.keyItem = [];
-            // console.log('columns:--', columns)
             columns.forEach(key=>{
                 let result ={};
                 if(item.hasOwnProperty(key) == false){
@@ -239,15 +238,12 @@ export default class MyLocation extends LightningElement {
                             key.isDate = true;
                             key.values = this.convert(key.values);
                         }
-                    console.log('values change:-', key);
+                    // console.log('values change:-', key);
                     }
                 })
-            //    if(!(Object.keys(item).includes('IsEdited'))){
-            //         console.log('add isedited in record:-', item.IsEdited = true);
-            //    }
             })
         }) 
-            console.log('final array1233:--', newArray);
+            // console.log('final array1233:--', newArray);
         this.childRecords = JSON.parse(JSON.stringify(newArray));
         console.log('final array:--', this.childRecords);
     }
@@ -259,7 +255,6 @@ export default class MyLocation extends LightningElement {
         return [mnth, day, year].join("/");
       }
     updateDataHandler(event) {
-        console.log('page records:--', this.pagRecords)
         this.pagRecords = [...event.detail.records];
         console.log('paginetor data', JSON.parse(JSON.stringify(this.pagRecords)));
     }
