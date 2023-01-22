@@ -351,7 +351,7 @@ export default class AddLocation extends LightningElement {
 
             updateRecord(recordInput)
             .then(result =>{
-                    console.log("result:", result);
+                    // console.log("result:", result);
                     this.dispatchEvent(
                         new ShowToastEvent({
                             title: "Success",
@@ -361,8 +361,6 @@ export default class AddLocation extends LightningElement {
                     );
                     this.records = recordsList;
                     // console.log('record inside update button', this.records);
-                    this.template.querySelector('c-my-location').notEdited();
-                    this.template.querySelector('c-my-location').handleTableData(this.records);
                     this.isEdited = false;
                     return refreshApex(this.refreshTable);
                     
@@ -376,12 +374,15 @@ export default class AddLocation extends LightningElement {
                             variant:"error"
                         })
                     );
-                    console.log("error", error);
+                    // console.log("error", error);
                 })
+                this.template.querySelector('c-my-location').notEdited();
+                this.template.querySelector('c-my-location').handleTableData(this.records);
+
         })
     }
     handleCancle(){
-        console.log('inside cancle button');
+        // console.log('inside cancle button');
         this.template.querySelector('c-my-location').notEdited();
         this.isEdited = false;
         return refreshApex(this.refreshTable);
@@ -501,14 +502,14 @@ export default class AddLocation extends LightningElement {
         recordsList = this.records;
         recordsList.map(item =>{
             if(item.Id == recordId){
-                console.log('inside if block', recordId);
+                // console.log('inside if block', recordId);
                 item = Object.assign(item, {[fieldName]:fieldValue});
-                console.log('item inside handlevaluechange', item);
+                // console.log('item inside handlevaluechange', item);
             }
             let date = new Date(item.TripDate__c)
             let newDate = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)) + "-" + ("0" + date.getDate());
             item.TripDate__c = newDate;
-            console.log('form_dt:-', newDate); 
+            // console.log('form_dt:-', newDate); 
                 
         })
         this.records = recordsList;
