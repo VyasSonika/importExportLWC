@@ -23,7 +23,7 @@
 
                     <tbody class ="table-body" style='height: 350px; overflow-y: scroll; position:relative'>
                         <template for:each={pagRecords} for:item="row" for:index="index">
-                            <tr class="truncateClass" key={row.Id} data-id={row.Id} ondblclick={onDoubleClickEdit}>
+                            <tr class="truncateClass slds-truncate" key={row.Id} data-id={row.Id} ondblclick={onDoubleClickEdit}>
                                 <template for:each={row.keyItem} for:item="item" >
                                     <td key={item} class= "" >
                                         <template if:false={row.IsEdited}>

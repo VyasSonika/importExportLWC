@@ -5,6 +5,8 @@ import uploadFiles from '@salesforce/apex/DriverController.uploadFile';
 import getDriverList from '@salesforce/apex/DriverController.getDriverList'
 //import saveFileData from '@salesforce/apex/DriverController.saveFileData';
 import releatedFiles from '@salesforce/apex/DriverController.releatedFiles';
+import updateRecords from '@salesforce/apex/DriverController.updateRecords';
+
 import { refreshApex } from '@salesforce/apex';
 import { readAsDataURL } from './readFile';
 import { updateRecord } from 'lightning/uiRecordApi';
@@ -19,6 +21,7 @@ const cols= [
     {label:'TripDate', fieldName:'TripDate__c', type:'date'},
 
 ]
+
 
 export default class AddLocation extends LightningElement {
     mapLoaction = MapLoaction;
@@ -38,7 +41,7 @@ export default class AddLocation extends LightningElement {
     fileName = '';
     isDisabled = false;
     isActive = false;
-    refreshTable;
+    @track refreshTable = [];
     @track records=[];
     isEdited = false;
     @track element =[];
@@ -60,6 +63,7 @@ export default class AddLocation extends LightningElement {
     show = false;
     selectedDate;
     dataPassChild = false;
+    @track fields = [];
     connectedCallback() {
 
         loadScript(this, excelFileReader + '/sheetjs/sheetmin.js')
@@ -338,48 +342,75 @@ export default class AddLocation extends LightningElement {
     //     // this.show = false;
        
     // }
-    handleUpdate(){
+    async handleUpdate(){
         console.log('inside handleUpdate', this.records);
-        recordsList = this.records;
-        recordsList.forEach(ele=>{
+        // recordsList = this.records;
+        // // let fields = {};
+        // const records = recordsList.map(ele=>{
 
-            console.log('trip date update:-', ele.TripDate__c);
-            let fields = {Id: ele.Id, Name: ele.Name, Destination_Address__c: ele.Destination_Address__c, Range__c: ele.Range__c, Tags__c:ele.Tags__c,
-                           TripDate__c: ele.TripDate__c };
-            let recordInput = { fields };
-            console.log('element:', recordInput);
+        //     // console.log('trip date update:-', ele.TripDate__c);
+        //    const fields = {Id: ele.Id, 
+        //                     Name: ele.Name, 
+        //                     Destination_Address__c: ele.Destination_Address__c, 
+        //                     Range__c: ele.Range__c, 
+        //                     Tags__c:ele.Tags__c,
+        //                    TripDate__c: ele.TripDate__c };
+        //     return { fields };
 
-            updateRecord(recordInput)
-            .then(result =>{
-                    // console.log("result:", result);
-                    this.dispatchEvent(
-                        new ShowToastEvent({
-                            title: "Success",
-                            message: "Record Successful updated",
-                            variant:"success"
-                        })
-                    );
-                    this.records = recordsList;
-                    // console.log('record inside update button', this.records);
-                    this.isEdited = false;
-                    return refreshApex(this.refreshTable);
-                    
+        // })
+        // console.log('update element records:', records);
+        // try{
+        //     const recordUpdatePromises = records.map((record) =>
+        //         // console.log('update element:', record)
+        //         updateRecord(record)
+        //     );
+        //     console.log('recordUpdatePromises:-', recordUpdatePromises);
+        //     await Promise.all(recordUpdatePromises);
+
+        //     console.log('promise all data:--', await Promise.all(recordUpdatePromises));
+
+        //     // Report success with a toast
+        //     this.dispatchEvent(
+        //         new ShowToastEvent({
+        //             title: 'Success',
+        //             message: 'Records updated',
+        //             variant: 'success'
+        //         })
+        //     );
+        //     this.template.querySelector('c-my-location').notEdited();
+        //     this.isEdited = false;
+        //     // Display fresh data in the datatable
+        //     await refreshApex(this.records);
+        // } catch (error) {
+        //     this.dispatchEvent(
+        //         new ShowToastEvent({
+        //             title: 'Error while updating or refreshing records',
+        //             message: error.body.message,
+        //             variant: 'error'
+        //         })
+        //     );
+        // }
+        
+        await updateRecords({fields: JSON.stringify(this.fields)})
+        .then(result => {
+            console.log('result:--', result);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Success',
+                    message: 'Records updated',
+                    variant: 'success'
                 })
-                .catch (error => {
-                    this.error = error;
-                    this.dispatchEvent(
-                        new ShowToastEvent({
-                            title: "Error!!",
-                            message: "Error message",
-                            variant:"error"
-                        })
-                    );
-                    // console.log("error", error);
-                })
-                this.template.querySelector('c-my-location').notEdited();
-                this.template.querySelector('c-my-location').handleTableData(this.records);
+            );
+            return refreshApex(this.refreshTable);
 
         })
+        .catch(error => {
+            console.log('error:--', error);
+        });
+        this.template.querySelector('c-my-location').notEdited();
+        this.isEdited = false;
+        this.template.querySelector('c-my-location').handleTableData(this.records);
+
     }
     handleCancle(){
         // console.log('inside cancle button');
@@ -496,24 +527,30 @@ export default class AddLocation extends LightningElement {
         let fieldValue = evt.detail.record;
         let fieldName = evt.detail.fieldName;
         let recordId = evt.detail.recordId;
-        // recordsList = evt.detail.records;
-        console.log('inside handleValueChange:--', );
-        // console.log('value coming from child', this.records.forEach(item=> item.fieldName));
         recordsList = this.records;
         recordsList.map(item =>{
+            // let fields = {};
             if(item.Id == recordId){
-                // console.log('inside if block', recordId);
-                item = Object.assign(item, {[fieldName]:fieldValue});
-                // console.log('item inside handlevaluechange', item);
+                console.log('inside if block', recordId);
+                let fields = {
+                    Id: recordId,
+                    fieldName: fieldName,
+                    fieldValue: fieldValue
+                }
+                // item = Object.assign(item, {[fieldName]:fieldValue});
+                console.log('item inside handlevaluechange', fields);
+                this.fields.push(fields);
+                // this.fields.push(item);
             }
-            let date = new Date(item.TripDate__c)
-            let newDate = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)) + "-" + ("0" + date.getDate());
-            item.TripDate__c = newDate;
-            // console.log('form_dt:-', newDate); 
+            // let date = new Date(item.TripDate__c)
+            // let newDate = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)) + "-" + ("0" + date.getDate());
+            // item.TripDate__c = newDate;
+            // console.log('form_dt:-', item); 
                 
         })
-        this.records = recordsList;
-        console.log('value coming from child', this.records);
-
+        console.log('update fields:-', JSON.parse(JSON.stringify(this.fields)));
+        // this.records = recordsList;
+        // console.log('value coming from child', this.records);
+        // this.handleUpdate();
     }
 }

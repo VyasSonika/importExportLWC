@@ -36,7 +36,7 @@ export default class MyLocation extends LightningElement {
         // console.log('type value:--', typeValue);
         this.handleTableData(this.childRecords);
     }
-    
+   
     onDoubleClickEdit(e){
         // console.log('event:---', e);
         // this.showDatePicker = true;
@@ -207,7 +207,8 @@ export default class MyLocation extends LightningElement {
     @api
     handleTableData(data){
          let newArray = [];
-       console.log('data from parent:-', data);
+        console.log('data from parent:-', JSON.parse(JSON.stringify(data)));
+       data = JSON.parse(JSON.stringify(data));
         data.forEach(item=>{
 
             item.keyItem = [];

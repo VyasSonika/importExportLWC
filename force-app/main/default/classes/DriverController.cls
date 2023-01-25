@@ -46,30 +46,58 @@ public with sharing class DriverController {
         return dr; 
     }   
     @AuraEnabled
-    public static Driver__c updateRecord(String recordId, String desName, String desAddress, String range, String tag, String strdate){
-        System.debug(recordId);
-        System.debug(desName);
-        System.debug(desAddress);
-        System.debug(range);
-        System.debug(tag);
-        Driver__c d = new Driver__c(Id = recordId);
-        String[] address     = desAddress.split(',');
-        d.Destination_Address__CountryCode__s = address[0];
-        d.Destination_Address__Street__s = address[1];
-        d.Destination_Address__City__s = address[2];
-        // d.Destination_Address__StateCode__s = address[3];
-        d.Destination_Address__PostalCode__s = address[3];
+    public static void updateRecords(String fields){
+        // System.debug(recordId);
+        System.debug('inside updateRecord');
+        System.debug('fields--'+ fields);
+        List<Object> values = (List<Object>)JSON.deserializeUntyped(fields);
+        System.debug('values of object:-' + values);
+        Driver__c d = new Driver__c();
+        
+        Map<String, Object> fieldValueMap = new Map<String, Object>();
 
-        System.debug(d.Destination_Address__City__s);
-        String strDate1 = strdate;
-        LIst<String>dayList = strDate.split('-');
-        d.TripDate__c = Date.newInstance(Integer.valueOf(dayList[0]), Integer.valueOf(dayList[1]), Integer.valueOf(dayList[2]));
-        System.debug(d.TripDate__c);
-        d.Name = desName;
-        d.Range__c = decimal.valueOf(range);
-        d.Tags__c = tag;
+        for(Object obj : values ){
+            System.debug('values of object:-'+ obj);
+            Map<String, Object> val = (Map<String, Object>) obj; 
+            System.debug('values of val:-'+ val);
+            String valsId = String.valueof(val.get('Id'));
+            String fieldName = String.valueof(val.get('fieldName'));
+            System.debug('fieldName:--' + fieldName);
+            SObjectType r = ((SObject)(Type.forName('Schema.'+'Driver__c').newInstance())).getSObjectType();
+            DescribeSObjectResult dr = r.getDescribe();
+            String type = String.valueOf(dr.fields.getMap().get(fieldName).getDescribe().getType());
+            // System.debug('fields type:==' + type);
+            d.put('Id', valsId);
+
+            if(type == 'String'){
+                System.debug('fields type:==' + type);
+
+                fieldValueMap.put( String.valueof(val.get('fieldName')), String.valueof(val.get('fieldValue')));
+            }
+            if(type == 'DOUBLE'){
+                System.debug('fields type:==' + type);
+
+                fieldValueMap.put( String.valueof(val.get('fieldName')), double.valueOf(val.get('fieldValue')));
+
+            }
+            if(type == 'Date'){
+                System.debug('fields type:==' + type);
+
+                fieldValueMap.put( String.valueof(val.get('fieldName')), Date.valueOf((val.get('fieldValue'))));
+
+            }
+         }
+         System.debug('==fieldValueMap=='+fieldValueMap);
+        for(String fn : fieldValueMap.keySet()){
+            System.debug('==fieldValueMap== keyset'+ fieldValueMap.keySet());
+            System.debug('==fieldName== keyset'+ fn);
+
+            d.put(fn, fieldValueMap.get(fn));
+        }
+        System.debug('==fieldName== key value:=='+ d);
+
         update d;
-        return d;
+       
     }
 
     @AuraEnabled

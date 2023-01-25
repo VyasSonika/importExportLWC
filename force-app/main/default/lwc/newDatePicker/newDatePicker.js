@@ -2,7 +2,7 @@ import { LightningElement, api, track } from 'lwc';
 import moment from '@salesforce/resourceUrl/momentjs';
 import { loadScript } from 'lightning/platformResourceLoader';
 
-export default class DatePicker extends LightningElement {
+export default class NewDatePicker extends LightningElement {
     lastClass;
     @track dateContext;
     @track selectedDate;
@@ -28,35 +28,35 @@ export default class DatePicker extends LightningElement {
         this.selectedDate = window.moment();
         // console.log('selectedDate', this.selectedDate);
         this.getformattedSelectedDate(this.selectedDate);
-        this.getyear(this.dateContext);
-        this.getmonth(this.dateContext);
+        // this.getyear(this.dateContext);
+        // this.getmonth(this.dateContext);
         this.refreshDateNodes();
     }
 
     getformattedSelectedDate(selectedDate) {
          this.selectedDate= selectedDate.format('MM/DD/YYYY');
     }
-    getyear(datecontext) {
+    get getyear() {
         // return console.log('inside get',this.dateContext);
         // this.dateContext.format('YYYY ');
-        this.year = datecontext.format('Y');
+        return this.datecontext;
     }
-    getmonth(datecontext) {
+    get getmonth() {
         // return this.dateContext.format('MM');
-        this.month = datecontext.format('MMMM');
+        return this.datecontext;
         // console.log('inside get month', this.month);
     }
-    // @api
-    // showChild(){
-    //      console.log('inside showchild component');
-    //     // this.template.querySelector('.date').style.display = "block";
-    // }
-    // @api
-    // hideChild(){
-    //      console.log('inside hidechild component');
-    //     // this.template.querySelector('.date').style.display = "none";
+    @api
+    showChild(){
+         console.log('inside showchild component');
+        // this.template.querySelector('.date').style.display = "block";
+    }
+    @api
+    hideChild(){
+         console.log('inside hidechild component');
+        // this.template.querySelector('.date').style.display = "none";
        
-    // }
+    }
     previousMonth() {
         // console.log('previous button')
         this.dateContext = window.moment(this.dateContext).subtract(1, 'month');
@@ -76,7 +76,7 @@ export default class DatePicker extends LightningElement {
     }
     goToday() {
         this.selectedDate = this.today.format('MM/DD/YYYY');
-        // console.log('inside today selected date', this.selectedDate);
+        console.log('inside today selected date', this.selectedDate);
         this.dateContext = this.today;
         this.getmonth(this.dateContext);
         this.getyear(this.dateContext);
@@ -142,8 +142,8 @@ export default class DatePicker extends LightningElement {
                     // console.log('day  isSame selected date', day.isSame(this.selectedDate, 'day'));
                     // console.log('day year', day.year());
                     let className = '';
-                    console.log('day of month:-', day.month());
-                    console.log('date of context:-', this.dateContext.month());
+                    // console.log('day of month:-', day.month());
+                    // console.log('date of context:-', this.dateContext.month());
                     if (day.month() === this.dateContext.month()) {
                         if (day.isSame(this.today, 'day')) {
                             className = 'today';
@@ -173,7 +173,7 @@ export default class DatePicker extends LightningElement {
     }
     handleCustomDate(selectedDate){
         this.selectedDate = selectedDate;
-        // console.log('inside custom event',this.selectedDate);
+        console.log('inside custom event',this.selectedDate);
         const evt = new CustomEvent('selectdate', {
             detail: this.selectedDate,
         });
