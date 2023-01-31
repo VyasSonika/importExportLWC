@@ -1,11 +1,18 @@
+import TickerSymbol from '@salesforce/schema/Account.TickerSymbol';
 import { LightningElement, track, api, wire} from 'lwc';
+import UserNameFIELD from '@salesforce/schema/User.Name';
+import { getRecord } from 'lightning/uiRecordApi';
+import USERID from '@salesforce/user/Id';
 
 let recordsList= [];
 let columns = [];
 let typeValue = [];
+let labelName = [];
 export default class MyLocation extends LightningElement {
     @api childColumn;
-    // @track columns=[];
+    @api tableData;
+    userId = USERID;
+    @track currentUserName;
     @api childRecords;
     isEditedChild;
     @track newArray;
@@ -18,29 +25,41 @@ export default class MyLocation extends LightningElement {
     recordId;
     @track pagRecords= [];
     fieldName;
-    // @track tableRecords = [];
-    // @track editedValues = [];
+    showToolTip = false;
+
+    @wire(getRecord, { recordId: USERID, fields: [UserNameFIELD]}) 
+    currentUserInfo({error, data}) {
+        if (data) {
+            console.log('user info:-', data); 
+            this.currentUserName = data.fields.Name.value;
+            console.log('user name:-', this.currentUserName); 
+
+        } else if (error) {
+            this.error = error ;
+        }
+    }
     connectedCallback(){
         this.arrowDown = true;
         this.arrowUp = true;
+        this.tableData = JSON.parse(JSON.stringify(this.tableData));
+        console.log('table data:--', this.tableData);
         this.childRecords = JSON.parse(JSON.stringify(this.childRecords));
         console.log('childRecords:--', this.childRecords);
         this.childColumn =JSON.parse(JSON.stringify(this.childColumn));
         let childColumn = this.childColumn;
-        childColumn.forEach(cc => {
-            columns.push(cc.fieldName);
+        childColumn.forEach(fn => {
+            columns.push(fn.fieldName);
         })
         childColumn.forEach(t=>{
             typeValue.push(t.type);
         })
-        // console.log('type value:--', typeValue);
+        childColumn.forEach(la => {
+            labelName.push(la.label);
+        })
+        console.log('labelName value:--', labelName);
         this.handleTableData(this.childRecords);
     }
-   
     onDoubleClickEdit(e){
-        // console.log('event:---', e);
-        // this.showDatePicker = true;
-        // console.log("inside onclick", e.currentTarget.dataset.id);
         let editedId = e.currentTarget.dataset.id;
         this.recordId = editedId;
         // console.log('recordId:', this.recordId);
@@ -49,20 +68,18 @@ export default class MyLocation extends LightningElement {
         recordsList.map(item =>{
             item.IsEdited = false;
             if(editedId == item.Id){
-                // console.log('inside if block:--');
                 item.IsEdited = true;
                 
             }else{
                 item.IsEdited = false;
-                // console.log('else block:--')
             }
             item.keyItem.forEach(key =>{
+                if(key.type ==='address'){
+                    this.showToolTip = true;
+                }
                 if(key.isDate == true){
                     key.isDate = false;
                 }
-                // console.log('keysss', key)
-                // console.log()
-                // return key;
             })
         })
         this.childRecords = recordsList;
@@ -88,18 +105,12 @@ export default class MyLocation extends LightningElement {
         this.fieldValues = evt.target.value;
         this.fieldName = evt.target.name;
         let fieldType = evt.target.dataset.type;
-        // console.log('field type:--', fieldType);
-        // console.log('field vales:--', this.fieldValues);
         console.log('update value', JSON.parse(JSON.stringify(this.childRecords)));
         recordsList =  JSON.parse(JSON.stringify(this.childRecords));
         recordsList.forEach(ele=>{
             if(ele.Id === this.recordId){
                 ele.keyItem.forEach(item=>{
                    if(item.keys == this.fieldName){
-                        if(fieldType === 'date'){
-                            // console.log('inside if block field type:-', fieldType);
-                            item.isDate = true;
-                        }
                         item.values = this.fieldValues;
                         // console.log('item:--', item);
                         this.updateData(this.fieldName, item.values);
@@ -112,31 +123,31 @@ export default class MyLocation extends LightningElement {
         console.log('updated value:--', recordsList);
         
         this.childRecords = [...recordsList];
-        // this.pagRecords = this.childRecords
-        // console.log('updated value:--', this.pagRecords);
     }
-    // handleDateChange(evt){
-    //     let fieldName = evt.target.name;
-        
-    //     let fieldType = evt.target.dataset.type;
-    //     console.log('fieldType', fieldType);
-    //     console.log('handledate change', evt);
-    //     recordsList = this.childRecords
-    //     recordsList.forEach(ele=>{
-    //         if(ele.Id === this.recordId){
-    //             ele.keyItem.forEach(item=>{
-    //                 if(fieldType === 'date' && fieldName === item.keys){
-    //                     console.log('item:--', item);
-    //                     item.isDate = true;
-    //                 }
-    //             })
-    //         }
-    //         return ele;
-    //     })
-    //     this.childRecords = recordsList;
-    //     console.log('record check here', this.childRecords);
+    handleDateChange(evt){
+        let fieldName = evt.target.name;
+        this.fieldValues = evt.target.value;
+        let fieldType = evt.target.dataset.type;
+        console.log('fieldType', fieldType);
+        console.log('handledate change', evt);
+        recordsList = this.childRecords
+        recordsList.forEach(ele=>{
+            if(ele.Id === this.recordId){
+                ele.keyItem.forEach(item=>{
+                    if(fieldType === 'date' && fieldName === item.keys){
+                        console.log('item:--', item);
+                        item.isDate = true;
+                    }
+                })
+            }
+            return ele;
+        })
+        this.childRecords = recordsList;
+        console.log('record check here', this.childRecords);
+        this.updateData(this.fieldName, this.fieldValues);
 
-    // }
+
+    }
     updateData(fieldName, fieldValues){
         // console.log('fieldname and fieldvalues:-', fieldName, fieldValues);
         this.dispatchEvent(new CustomEvent('valuechange',{ 
@@ -205,12 +216,11 @@ export default class MyLocation extends LightningElement {
         this.childRecords = recordsList;
     }
     @api
-    handleTableData(data){
+    handleTableData(data) {
          let newArray = [];
         console.log('data from parent:-', JSON.parse(JSON.stringify(data)));
        data = JSON.parse(JSON.stringify(data));
         data.forEach(item=>{
-
             item.keyItem = [];
             columns.forEach(key=>{
                 let result ={};
@@ -241,12 +251,16 @@ export default class MyLocation extends LightningElement {
                         }
                     // console.log('values change:-', key);
                     }
+                    if(key.type === 'address'){
+                        key.isTooltip = true;
+                    }
                 })
             })
         }) 
             // console.log('final array1233:--', newArray);
         this.childRecords = JSON.parse(JSON.stringify(newArray));
         console.log('final array:--', this.childRecords);
+        
     }
     convert(str) {
         let date = new Date(str),
@@ -258,5 +272,65 @@ export default class MyLocation extends LightningElement {
     updateDataHandler(event) {
         this.pagRecords = [...event.detail.records];
         console.log('paginetor data', JSON.parse(JSON.stringify(this.pagRecords)));
+    }
+    handleDownloadtable(){
+        let records = this.tableData;
+        this.downloadCSVFile(records);
+    }
+     // this method validates the data and creates the csv file to download
+     downloadCSVFile(data) { 
+        console.log('data:-', data);  
+        let rowEnd = '\n';
+        let csvString = '';
+        csvString += labelName.join(',');
+        console.log('csv+rowdata:--', csvString);
+        csvString += rowEnd;
+        console.log(data);
+        data.forEach(obj=>{
+            let count = 0;
+            console.log('object;--', obj);
+            columns.forEach(key=>{
+                if(obj.hasOwnProperty(key) === true){
+                    if(count > 0){
+                        csvString += ','
+                        console.log('csv+rowdata add comma:--', csvString);
+    
+                    }
+                    // If the column is undefined, it as blank in the CSV file.
+                    let value = obj[key] === undefined ? '' : obj[key];
+                    csvString += '"'+ value +'"';
+                    console.log('csvString value:--', csvString);
+                    count++;
+                }
+            })
+            csvString +=rowEnd;
+        })
+        // console.log("str", str)
+        console.log("str:--", csvString)
+ 
+        // Creating anchor element to download
+        let downloadElement = document.createElement('a');
+        let date = new Date();
+        // This  encodeURI encodes special characters, except: , / ? : @ & = + $ # (Use encodeURIComponent() to encode these characters).
+        downloadElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvString);
+        downloadElement.target = '_self';
+        // CSV File Name
+        downloadElement.download = this.currentUserName +date+ '.csv';
+        // below statement is required if you are using firefox browser
+        document.body.appendChild(downloadElement);
+        // click() Javascript function to download CSV file
+        downloadElement.click(); 
+    }
+    handleClickRowDownload(evt){
+        let rowId = evt.target.dataset.id;
+        console.log('row id:--', rowId);
+        let rowData = [];
+        this.tableData.forEach(obj=>{
+            if(obj.Id === rowId){
+                rowData.push(obj);
+            }
+        })
+        console.log('rowData:--', rowData);
+        this.downloadCSVFile(rowData);
     }
 }

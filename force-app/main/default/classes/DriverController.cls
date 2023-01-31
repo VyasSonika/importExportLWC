@@ -5,9 +5,9 @@ public with sharing class DriverController {
         return [SELECT 
                     Id,
                     Name,
-                    Contact__r.Name, 
+                    // Contact__r.Name, 
                     Destination_Address__c, 
-                    Location__c, 
+                    // Location__c, 
                     Range__c,
                     Tags__c,
                     TripDate__c

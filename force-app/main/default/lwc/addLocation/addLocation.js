@@ -14,11 +14,13 @@ import { loadScript } from 'lightning/platformResourceLoader';
 import excelFileReader from '@salesforce/resourceUrl/sheetjs';
 let recordsList = [];
 const cols= [
-    {label:'DestinationName', fieldName:'Name', type:'text'},
-    {label:'DestinationAddress', fieldName:'Address', type:'address'},
+    {label:'Destination Name', fieldName:'Name', type:'text'},
+    {label:'Destination Address', fieldName:'Address', type:'address'},
     {label:'Range', fieldName:'Range__c', type:'number'},
     {label:'Tag', fieldName:'Tags__c', type:'text'},
-    {label:'TripDate', fieldName:'TripDate__c', type:'date'},
+    {label:'Trip Date', fieldName:'TripDate__c', type:'date'},
+    // {label:'Contact Name', fieldName:'Contact__r.Name', type:'text'},
+
 
 ]
 
@@ -97,12 +99,6 @@ export default class AddLocation extends LightningElement {
                     r.Address = r.Destination_Address__c.countryCode+ ', ' + r.Destination_Address__c.street + ', '+
                     r.Destination_Address__c.city + ', '+ r.Destination_Address__c.stateCode + ', ' +
                     r.Destination_Address__c.postalCode;
-                    // if (r.TripDate__c ) {
-                    
-                    //     let dt = new Date( r.TripDate__c );
-                    //     r.TripDate__c = new Intl.DateTimeFormat( 'en-US', {month:'2-digit',day:'2-digit', year:'2-digit'} ).format(dt);
-                    // }
-                    
                     this.recordId = r.Id;
                     return r;
             })
@@ -344,56 +340,31 @@ export default class AddLocation extends LightningElement {
     // }
     async handleUpdate(){
         console.log('inside handleUpdate', this.records);
-        // recordsList = this.records;
-        // // let fields = {};
-        // const records = recordsList.map(ele=>{
+        recordsList = this.records;
+        const records = recordsList.map(ele=>{
 
-        //     // console.log('trip date update:-', ele.TripDate__c);
-        //    const fields = {Id: ele.Id, 
-        //                     Name: ele.Name, 
-        //                     Destination_Address__c: ele.Destination_Address__c, 
-        //                     Range__c: ele.Range__c, 
-        //                     Tags__c:ele.Tags__c,
-        //                    TripDate__c: ele.TripDate__c };
-        //     return { fields };
+            // console.log('trip date update:-', ele.TripDate__c);
+           const fields = {Id: ele.Id, 
+                            Name: ele.Name, 
+                            Destination_Address__c: ele.Destination_Address__c, 
+                            Range__c: ele.Range__c, 
+                            Tags__c:ele.Tags__c,
+                           TripDate__c: ele.TripDate__c };
+            return { fields };
 
-        // })
-        // console.log('update element records:', records);
-        // try{
-        //     const recordUpdatePromises = records.map((record) =>
-        //         // console.log('update element:', record)
-        //         updateRecord(record)
-        //     );
-        //     console.log('recordUpdatePromises:-', recordUpdatePromises);
-        //     await Promise.all(recordUpdatePromises);
+        })
+        console.log('update element records:', records);
+        try{
+            const recordUpdatePromises = records.map((record) =>
+                // console.log('update element:', record)
+                updateRecord(record)
+            );
+            console.log('recordUpdatePromises:-', recordUpdatePromises);
+            await Promise.all(recordUpdatePromises);
 
-        //     console.log('promise all data:--', await Promise.all(recordUpdatePromises));
+            console.log('promise all data:--', await Promise.all(recordUpdatePromises));
 
-        //     // Report success with a toast
-        //     this.dispatchEvent(
-        //         new ShowToastEvent({
-        //             title: 'Success',
-        //             message: 'Records updated',
-        //             variant: 'success'
-        //         })
-        //     );
-        //     this.template.querySelector('c-my-location').notEdited();
-        //     this.isEdited = false;
-        //     // Display fresh data in the datatable
-        //     await refreshApex(this.records);
-        // } catch (error) {
-        //     this.dispatchEvent(
-        //         new ShowToastEvent({
-        //             title: 'Error while updating or refreshing records',
-        //             message: error.body.message,
-        //             variant: 'error'
-        //         })
-        //     );
-        // }
-        
-        await updateRecords({fields: JSON.stringify(this.fields)})
-        .then(result => {
-            console.log('result:--', result);
+            // Report success with a toast
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Success',
@@ -401,12 +372,36 @@ export default class AddLocation extends LightningElement {
                     variant: 'success'
                 })
             );
-            return refreshApex(this.refreshTable);
+            this.template.querySelector('c-my-location').notEdited();
+            this.isEdited = false;
+            // Display fresh data in the datatable
+            await refreshApex(this.records);
+        } catch (error) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error while updating or refreshing records',
+                    message: error.body.message,
+                    variant: 'error'
+                })
+            );
+        }
+        
+        // await updateRecords({fields: JSON.stringify(this.fields)})
+        // .then(result => {
+        //     console.log('result:--', result);
+        //     this.dispatchEvent(
+        //         new ShowToastEvent({
+        //             title: 'Success',
+        //             message: 'Records updated',
+        //             variant: 'success'
+        //         })
+        //     );
+        //     return refreshApex(this.refreshTable);
 
-        })
-        .catch(error => {
-            console.log('error:--', error);
-        });
+        // })
+        // .catch(error => {
+        //     console.log('error:--', error);
+        // });
         this.template.querySelector('c-my-location').notEdited();
         this.isEdited = false;
         this.template.querySelector('c-my-location').handleTableData(this.records);

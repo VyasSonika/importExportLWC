@@ -45,43 +45,6 @@ th, tr, td{
   background-color: rgb(231, 229, 229);
   border-radius: 8px;
 }
-.tooltip {
-  position: initial;
-  display: inline-block;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: auto;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 3px;
-  /* position: absolute; */
-  /* z-index: 1; */
-  top: 12px;
-    left: 15%;
-}
-/* .date_with_calender {
-  display: flex;
-  justify-content: space-around;
-} */
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-
-  }
-
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-}
-
 .truncateClass{
   white-space: nowrap;
   width: 174px;
@@ -109,9 +72,6 @@ th, tr, td{
 ::-webkit-scrollbar-button {
   height: 5px;
 } 
-/* .toolTip-position{
-  position: absolute;
-} */
 .table_header_thead{
   margin-left: -15px;
 }
@@ -123,4 +83,21 @@ th, tr, td{
   z-index: 1;
   padding-left: 15px;
   padding-top: 40px;
+}
+.tooltip-text {
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+  left: 300px;
+  margin-top: 30px;
+  /* width: 100px; */
+  color: white;
+  font-size: 12px;
+  background-color: #192733;
+  border-radius: 10px;
+  padding: 10px 15px 10px 15px;
+}
+
+.hover-text:hover .tooltip-text {
+  visibility: visible;
 }

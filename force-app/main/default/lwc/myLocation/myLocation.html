@@ -1,6 +1,11 @@
 <template>
     <div  class="mapLocationCard">
-        <!-- <div class="slds-table_edit_container"> -->
+        <lightning-button icon-name="utility:download" 
+                            label="DownloadAll" 
+                            onclick={handleDownloadtable} variant="brand"
+                            class="slds-float_right">
+        </lightning-button>
+
             <table class="">
                 <thead class="table_header_thead">
                     <tr class="slds-line-height_reset">
@@ -10,8 +15,8 @@
                                 <th key={column} class="slds-truncate">
                                 <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick={sortRecs} name={column.fieldName}>
                                        {column.label}
-                                        <lightning-icon key={column.fieldName} icon-name="utility:arrowup" size="xx-small" if:true={arrowUp}></lightning-icon>
-                                        <lightning-icon key={column.fieldName} icon-name="utility:arrowdown" size="xx-small" if:true={arrowDown}></lightning-icon>
+                                        <lightning-icon name={column.fieldName} icon-name="utility:arrowup" size="xx-small" if:true={arrowUp}></lightning-icon>
+                                        <lightning-icon name={column.fieldName} icon-name="utility:arrowdown" size="xx-small" if:true={arrowDown}></lightning-icon>
                                 
                                 </a>
                             </th>
@@ -23,14 +28,17 @@
 
                     <tbody class ="table-body" style='height: 350px; overflow-y: scroll; position:relative'>
                         <template for:each={pagRecords} for:item="row" for:index="index">
-                            <tr class="truncateClass slds-truncate" key={row.Id} data-id={row.Id} ondblclick={onDoubleClickEdit}>
+
+                            <tr class="" key={row.Id} data-id={row.Id} ondblclick={onDoubleClickEdit}>
                                 <template for:each={row.keyItem} for:item="item" >
-                                    <td key={item} class= "" >
+                                    <td key={item} class= "" data-type={item.type}>
+                                        
                                         <template if:false={row.IsEdited}>
-                                            <div class="truncateClass tooltip">{item.values}
-                                                <span class="tooltiptext">{item.values}</span>
+                                            <div if:true={item.isTooltip} class="hover-text slds-truncate">{item.values}
+                                                <span class="tooltip-text ">{item.values}</span>
                                                 
                                             </div>
+                                            <div if:false={item.isTooltip} class="">{item.values}</div>
                                         </template>    
                                        <template if:true={row.IsEdited}>
                                         <!-- <lightning-icon size="x-small" class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" icon-name="utility:date_input">
@@ -39,7 +47,7 @@
                                                     
                                                 <c-date-picker onselectdate={handleSelectDate}></c-date-picker>
                                             </div>
-                                            <lightning-input class ="slds-m-left_x-small slds-input__icon_right" icon-name="utility:date_input" label="Destination Name" value={item.values} 
+                                            <lightning-input class ="slds-var-m-left_x-small slds-input__icon_right" icon-name="utility:date_input" label="Destination Name" value={item.values} 
                                                 name={item.keys} data-type={item.type} variant="label-hidden" onchange={handleChange} onclick={handleDateChange}>
                                             </lightning-input>
                                         </template>
@@ -47,6 +55,10 @@
 
                                     </td>
                                 </template>
+                                <td>
+                                    <lightning-button data-id={row.Id} icon-name="utility:download" variant="brand" label="Download" onclick={handleClickRowDownload} class="slds-var-m-left_xxx-small slds-float_right">
+                                    </lightning-button>
+                                </td>
                             </tr>
                         </template>
         
