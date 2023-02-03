@@ -146,4 +146,15 @@ public with sharing class DriverController {
             return cdl;
         }
     }
+    @AuraEnabled(cacheable=true)
+    public static String getLocation(Decimal latitude, Decimal longitude, String recordId) {
+        System.debug('inside method');
+        
+        String query = 'SELECT Name, Location__Latitude__s, Location__Longitude__s FROM Boat__c ';
+        if (String.isNotBlank(recordId)) {
+            query += 'WHERE Id =:recordId' ;
+        }
+        query += ' WITH SECURITY_ENFORCED ORDER BY DISTANCE(Location__c, GEOLOCATION(:latitude, :longitude), \'mi\') LIMIT 10';
+        return JSON.serialize(Database.query(query));
+    }
 }
