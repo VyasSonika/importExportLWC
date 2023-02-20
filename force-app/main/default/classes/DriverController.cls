@@ -46,7 +46,7 @@ public with sharing class DriverController {
         return dr; 
     }   
     @AuraEnabled
-    public static void updateRecords(String fields){
+    public static String updateRecords(String fields){
         // System.debug(recordId);
         System.debug('inside updateRecord');
         System.debug('fields--'+ fields);
@@ -66,7 +66,7 @@ public with sharing class DriverController {
             SObjectType r = ((SObject)(Type.forName('Schema.'+'Driver__c').newInstance())).getSObjectType();
             DescribeSObjectResult dr = r.getDescribe();
             String type = String.valueOf(dr.fields.getMap().get(fieldName).getDescribe().getType());
-            // System.debug('fields type:==' + type);
+            System.debug('fields type:==' + type);
             d.put('Id', valsId);
 
             if(type == 'String'){
@@ -74,7 +74,7 @@ public with sharing class DriverController {
 
                 fieldValueMap.put( String.valueof(val.get('fieldName')), String.valueof(val.get('fieldValue')));
             }
-            if(type == 'DOUBLE'){
+            if(type == 'Double' || type == 'Integer '){
                 System.debug('fields type:==' + type);
 
                 fieldValueMap.put( String.valueof(val.get('fieldName')), double.valueOf(val.get('fieldValue')));
@@ -96,7 +96,8 @@ public with sharing class DriverController {
         }
         System.debug('==fieldName== key value:=='+ d);
 
-        update d;
+        upsert d;
+        return 'Success: successfully updated/Inserted';
        
     }
 
@@ -147,14 +148,56 @@ public with sharing class DriverController {
         }
     }
     @AuraEnabled(cacheable=true)
-    public static String getLocation(Decimal latitude, Decimal longitude, String recordId) {
+    public static Driver__c getLocation(String recordId, Decimal latitude, Decimal longitude) {
         System.debug('inside method');
         
-        String query = 'SELECT Name, Location__Latitude__s, Location__Longitude__s FROM Boat__c ';
-        if (String.isNotBlank(recordId)) {
-            query += 'WHERE Id =:recordId' ;
-        }
-        query += ' WITH SECURITY_ENFORCED ORDER BY DISTANCE(Location__c, GEOLOCATION(:latitude, :longitude), \'mi\') LIMIT 10';
-        return JSON.serialize(Database.query(query));
+        Driver__c dr = [
+                        SELECT 
+                        Name, 
+                        Location__c, 
+                        Destination_Address__c, 
+                        Location__Latitude__s,
+                        Location__Longitude__s
+                        FROM Driver__c 
+                        WHERE Id =: recordId
+                        ORDER BY DISTANCE(Location__c, 
+                        GEOLOCATION(:latitude,:longitude),'km') LIMIT 10];
+        System.debug('dr-------:'+ dr);
+                  
+        return dr;
+    }
+    // @AuraEnabled(cacheable=true)
+    // public static string dmlOnData(Object data) {
+    //     // System.debug('deleted Id' + removeId);
+    //     System.debug('data:--' + data);
+
+    //     Driver__c updateDriver = (Driver__c) JSON.deserialize(JSON.serialize(data), Driver__c.class);
+    //     System.debug('updateDriver:-' + updateDriver);
+        
+    //     // Driver__c deleteDriver = new Driver__c(Id = removeId);
+ 
+    //     try {
+    //         if(updateDriver != null){
+    //             upsert updateDriver;
+    //             System.debug('updateDriver:--' + updateDriver);
+
+    //         }
+    //         // delete deleteDriver;
+    //         return 'Success: records upsert/delete successfully';
+    //     }
+    //     catch (Exception e) {
+    //         String errorMsg = 'The following exception has occurred: ' + e.getMessage();
+    //         throw new AuraHandledException(ErrorMsg);
+    //     }
+    //    // return '';
+    // }
+    @AuraEnabled
+    public static String deleteRecord(String deleteId){
+        System.debug('deleted Id ' + deleteId);
+
+        Driver__c dr = new Driver__c(id = deleteId );
+        System.debug('deleteDriver:--' + dr);
+        delete dr;
+        return 'Success: deleted successfully';
     }
 }

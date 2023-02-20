@@ -30,9 +30,9 @@ export default class MyLocation extends LightningElement {
     @wire(getRecord, { recordId: USERID, fields: [UserNameFIELD]}) 
     currentUserInfo({error, data}) {
         if (data) {
-            console.log('user info:-', data); 
+            // console.log('user info:-', data); 
             this.currentUserName = data.fields.Name.value;
-            console.log('user name:-', this.currentUserName); 
+            // console.log('user name:-', this.currentUserName); 
 
         } else if (error) {
             this.error = error ;
@@ -42,9 +42,9 @@ export default class MyLocation extends LightningElement {
         this.arrowDown = true;
         this.arrowUp = true;
         this.tableData = JSON.parse(JSON.stringify(this.tableData));
-        console.log('table data:--', this.tableData);
+        // console.log('table data:--', this.tableData);
         this.childRecords = JSON.parse(JSON.stringify(this.childRecords));
-        console.log('childRecords:--', this.childRecords);
+        // console.log('childRecords:--', this.childRecords);
         this.childColumn =JSON.parse(JSON.stringify(this.childColumn));
         let childColumn = this.childColumn;
         childColumn.forEach(fn => {
@@ -56,13 +56,16 @@ export default class MyLocation extends LightningElement {
         childColumn.forEach(la => {
             labelName.push(la.label);
         })
-        console.log('labelName value:--', labelName);
+        this.tableData.forEach(ele=>{
+            this.recordId = ele.Id;
+        })
+        // console.log('labelName value:--', labelName);
         this.handleTableData(this.childRecords);
     }
     onDoubleClickEdit(e){
         let editedId = e.currentTarget.dataset.id;
         this.recordId = editedId;
-        // console.log('recordId:', this.recordId);
+        console.log('recordId:', this.recordId);
         recordsList = JSON.parse(JSON.stringify(this.childRecords));
         // console.log('recordsList:--', recordsList);
         recordsList.map(item =>{
@@ -93,7 +96,7 @@ export default class MyLocation extends LightningElement {
     }
     @api 
     notEdited(){
-        console.log('from child com. not edited', this.childRecords);
+        // console.log('from child com. not edited', this.childRecords);
         recordsList = JSON.parse(JSON.stringify(this.childRecords));
         recordsList.map(item=>{
            item.IsEdited = false;
@@ -105,7 +108,7 @@ export default class MyLocation extends LightningElement {
         this.fieldValues = evt.target.value;
         this.fieldName = evt.target.name;
         let fieldType = evt.target.dataset.type;
-        console.log('update value', JSON.parse(JSON.stringify(this.childRecords)));
+        // console.log('update value', JSON.parse(JSON.stringify(this.childRecords)));
         recordsList =  JSON.parse(JSON.stringify(this.childRecords));
         recordsList.forEach(ele=>{
             if(ele.Id === this.recordId){
@@ -120,7 +123,7 @@ export default class MyLocation extends LightningElement {
             }
             return ele;
         })
-        console.log('updated value:--', recordsList);
+        // console.log('updated value:--', recordsList);
         
         this.childRecords = [...recordsList];
     }
@@ -128,8 +131,8 @@ export default class MyLocation extends LightningElement {
         let fieldName = evt.target.name;
         this.fieldValues = evt.target.value;
         let fieldType = evt.target.dataset.type;
-        console.log('fieldType', fieldType);
-        console.log('handledate change', evt);
+        // console.log('fieldType', fieldType);
+        // console.log('handledate change', evt);
         recordsList = this.childRecords
         recordsList.forEach(ele=>{
             if(ele.Id === this.recordId){
@@ -143,7 +146,7 @@ export default class MyLocation extends LightningElement {
             return ele;
         })
         this.childRecords = recordsList;
-        console.log('record check here', this.childRecords);
+        // console.log('record check here', this.childRecords);
         this.updateData(this.fieldName, this.fieldValues);
 
 
@@ -218,7 +221,7 @@ export default class MyLocation extends LightningElement {
     @api
     handleTableData(data) {
          let newArray = [];
-        console.log('data from parent:-', JSON.parse(JSON.stringify(data)));
+        // console.log('data from parent:-', JSON.parse(JSON.stringify(data)));
        data = JSON.parse(JSON.stringify(data));
         data.forEach(item=>{
             item.keyItem = [];
@@ -259,7 +262,7 @@ export default class MyLocation extends LightningElement {
         }) 
             // console.log('final array1233:--', newArray);
         this.childRecords = JSON.parse(JSON.stringify(newArray));
-        console.log('final array:--', this.childRecords);
+        // console.log('final array:--', this.childRecords);
         
     }
     convert(str) {
@@ -271,7 +274,7 @@ export default class MyLocation extends LightningElement {
       }
     updateDataHandler(event) {
         this.pagRecords = [...event.detail.records];
-        console.log('paginetor data', JSON.parse(JSON.stringify(this.pagRecords)));
+        // console.log('paginetor data', JSON.parse(JSON.stringify(this.pagRecords)));
     }
     handleDownloadtable(){
         let records = this.tableData;
@@ -283,12 +286,12 @@ export default class MyLocation extends LightningElement {
         let rowEnd = '\n';
         let csvString = '';
         csvString += labelName.join(',');
-        console.log('csv+rowdata:--', csvString);
+        // console.log('csv+rowdata:--', csvString);
         csvString += rowEnd;
-        console.log(data);
+        // console.log(data);
         data.forEach(obj=>{
             let count = 0;
-            console.log('object;--', obj);
+            // console.log('object;--', obj);
             columns.forEach(key=>{
                 if(obj.hasOwnProperty(key) === true){
                     if(count > 0){
@@ -306,7 +309,7 @@ export default class MyLocation extends LightningElement {
             csvString +=rowEnd;
         })
         // console.log("str", str)
-        console.log("str:--", csvString)
+        // console.log("str:--", csvString)
  
         // Creating anchor element to download
         let downloadElement = document.createElement('a');
@@ -330,7 +333,8 @@ export default class MyLocation extends LightningElement {
                 rowData.push(obj);
             }
         })
-        console.log('rowData:--', rowData);
+        // console.log('rowData:--', rowData);
         this.downloadCSVFile(rowData);
     }
+    
 }

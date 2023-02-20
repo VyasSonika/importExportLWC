@@ -1,0 +1,85 @@
+<template>
+    <lightning-card>
+        <lightning-button icon-name="utility:add" 
+            label="AddRow" 
+            onclick={handleAddRow} variant="brand"
+            class="slds-float_left">
+        </lightning-button>
+        <table border="2" class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead class="">
+                <tr class="">
+                        <template for:each={colunms} for:item="column">
+                            <th key={column} class="fontBold " scope="col"> {column.label}</th>
+                    </template>
+                </tr>
+            </thead>
+
+                <tbody>
+                    <template for:each={records} for:item="row" for:index="index">
+                        <tr class="" key={row.Id} >
+                            <td>  
+                                <div if:false={row.IsEdited}>{row.Name}</div>
+                                <template if:true={row.IsEdited}>
+                                    <lightning-input class ="slds-var-m-left_x-small" name='Name' value={row.Name} 
+                                        variant="label-hidden" data-id={row.Id} onchange={updateValues} >
+                                    </lightning-input>
+                                </template>
+                            </td>
+                            <td class= "">
+                                <div if:false={row.IsEdited}>{row.Range__c}</div>
+                                <template if:true={row.IsEdited}>
+                                    <lightning-input class ="slds-var-m-left_x-small" name= 'Range__c' value={row.Range__c} 
+                                        variant="label-hidden" data-id={row.Id} onchange={updateValues} >
+                                    </lightning-input>
+                                </template>
+                            </td>
+                            <td class= "">
+                                <div if:false={row.IsEdited}>{row.Tags__c}</div>
+                                <template if:true={row.IsEdited}>
+                                    <lightning-input class ="slds-var-m-left_x-small" name='Tags__c' value={row.Tags__c} 
+                                        variant="label-hidden" data-id={row.Id} onchange={updateValues} >
+                                    </lightning-input>
+                                </template>
+                            </td>
+                            <td class= "" if:false={hideEdit}>
+                                <lightning-button 
+                                    label="Edit" 
+                                    data-id={row.Id}
+                                    onclick={handleEditRow} variant="brand"
+                                    class="slds-var-m-left_xxx-small slds-float_right">
+                                </lightning-button>
+                            </td>
+                            <template if:true={hideEdit}>
+                                <td class= "">
+                                    <lightning-button 
+                                        label="save" 
+                                        data-id={row.Id}
+                                        onclick={handleSaveRow} variant="success"
+                                        class="slds-var-m-left_xxx-small slds-float_right">
+                                    </lightning-button>
+                                </td>
+                                <td class= "">
+                                    <lightning-button 
+                                        label="Cancle" 
+                                        data-id={row.Id}
+                                        onclick={handleCancleRow} variant="brand"
+                                        class="slds-var-m-left_xxx-small slds-float_right">
+                                    </lightning-button>
+                                </td>
+                            </template>
+                            <td class= "">
+                                <lightning-button 
+                                    label="Delete" 
+                                    data-id={row.Id}
+                                    onclick={handleDeleteRow} variant="destructive"
+                                    class="slds-var-m-left_xxx-small slds-float_right">
+                                </lightning-button>
+                            </td>
+                        </tr>
+                    </template>
+
+                </tbody>
+
+        </table>
+    </lightning-card>
+</template>

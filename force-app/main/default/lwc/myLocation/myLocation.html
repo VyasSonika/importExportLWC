@@ -5,6 +5,7 @@
                             onclick={handleDownloadtable} variant="brand"
                             class="slds-float_right">
         </lightning-button>
+       
 
             <table class="">
                 <thead class="table_header_thead">
@@ -68,6 +69,9 @@
             <lightning-card>
                 <c-paginator records={childRecords} onupdate={updateDataHandler}></c-paginator>
             </lightning-card>
-            <c-map-location record-id={recordId}></c-map-location>
+            <c-map-location record-id={recordId} records={childRecords}></c-map-location>
+            <!-- <c-add-row-for-table columns={childColumn} records={childRecords}></c-add-row-for-table> -->
+
+
     </div>
 </template>

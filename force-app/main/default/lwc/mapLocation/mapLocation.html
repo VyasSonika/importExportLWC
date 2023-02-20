@@ -1,21 +1,39 @@
 <template>
     <div class="slds-grid slds-gutters">
         <div class="slds-col slds-size_1-of-6">
-                <lightning-input label = "From" placeholder="latitude value" value={latitude} onchange={handleLatitude}>
-                </lightning-input>
+            <lightning-combobox
+                name="progress"
+                label="FROM"
+                value={inputFrom}
+                placeholder="Select Address"
+                options={address}
+                onchange={handleChangeFrom} >
+            </lightning-combobox>
         </div>
         <div class="slds-col slds-size_1-of-6">
-                <lightning-input label = "TO" placeholder="longitude value" value={longitude} onchange={handleLongitude}>
-                </lightning-input>
+            <lightning-combobox
+                name="address"
+                label="TO"
+                value={inputTo}
+                placeholder="Select Address"
+                options={address}
+                onchange={handleChangeTo} >
+            </lightning-combobox>
         </div>
-      </div>
-    <lightning-card class="slds-is-relative">
-        <!-- The template and lightning-spinner goes here -->
-        <template if:true={isLoading}>
-            <lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
-        </template>       
-        <!-- The lightning-map goes here -->
-        <lightning-map map-markers={mapMarkers} zoom-level="20"
-        onclick={handleLocaCliak}></lightning-map>
-    </lightning-card>
+        <div class="slds-col slds-size_1-of-6 search_button">
+            <lightning-button  label= "Search" variant="brand" onclick={handleAddressSearchLoc}>
+            </lightning-button>
+        </div>
+    </div>
+    <div if:true={isLoad} class={mapDisplay}>
+        <lightning-map 
+            map-markers={newMapMarkers}
+            markers-title={locationName}
+            onmarkerselect={handleMarkerSelect}
+            selected-marker-value={selectedMarkerValue}
+            zoom-level="15"
+        >
+        </lightning-map>
+    </div>
+   
 </template>  
