@@ -5,9 +5,9 @@ public with sharing class DriverController {
         return [SELECT 
                     Id,
                     Name,
-                    // Contact__r.Name, 
+                    Contact__r.Name, 
                     Destination_Address__c, 
-                    // Location__c, 
+                    Location__c, 
                     Range__c,
                     Tags__c,
                     TripDate__c
@@ -74,7 +74,7 @@ public with sharing class DriverController {
 
                 fieldValueMap.put( String.valueof(val.get('fieldName')), String.valueof(val.get('fieldValue')));
             }
-            if(type == 'Double' || type == 'Integer '){
+            if(type == 'DOUBLE'){
                 System.debug('fields type:==' + type);
 
                 fieldValueMap.put( String.valueof(val.get('fieldName')), double.valueOf(val.get('fieldValue')));

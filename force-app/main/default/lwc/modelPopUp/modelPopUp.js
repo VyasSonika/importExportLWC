@@ -1,21 +1,21 @@
 import {LightningElement, api, track} from 'lwc';
 
 export default class ModelPopUp extends LightningElement {
-    @api isopenmodel = false;
+    @api isOpenmodel = false;
     @api recordId='';
     @api objectApiName;
 
     @api openmodal() {
         console.log('in open model block:');
-        this.isopenmodel = true;
+        this.isOpenmodel = true;
     }
     closeModal() {
-        this.isopenmodel = false;
+        this.isOpenmodel = false;
     } 
     saveMethod() {
         console.log('submit update blog')
     // to close modal set isModalOpen tarck value as false
-        this.isopenmodel = false;
+        this.isOpenmodel = false;
         const selectEvent = new CustomEvent('mycustomevent', {
         });
        this.dispatchEvent(selectEvent);
@@ -28,7 +28,7 @@ export default class ModelPopUp extends LightningElement {
          this.objectApiName = value;
     }
     // handleEditSuccess(){
-    //     this.isopenmodel = false;
+    //     this.isOpenmodel = false;
     //     const showSuccess = new ShowToastEvent({ 
     //         title: 'Update!',
     //         message: 'Your record Updated .',

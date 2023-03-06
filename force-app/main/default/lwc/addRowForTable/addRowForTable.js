@@ -2,8 +2,9 @@ import { api, LightningElement, track, wire } from 'lwc';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent'
 import getDriverList from '@salesforce/apex/DriverController.getDriverList'
-import deleteRecord from '@salesforce/apex/DriverController.deleteRecord';
+// import deleteRecord from '@salesforce/apex/DriverController.deleteRecord';
 import updateRecords from '@salesforce/apex/DriverController.updateRecords';
+import { deleteRecord } from 'lightning/uiRecordApi';
 
 import { refreshApex } from '@salesforce/apex';
 const col = [
@@ -179,24 +180,24 @@ export default class AddRowForTable extends LightningElement {
     handleDeleteRow(evt){
         console.log('handleDeleteRow:--', evt.target.dataset.id);
         this.deleteId = evt.target.dataset.id;
-        deleteRecord({deleteId: this.deleteId})
+        // deleteRecord({deleteId: this.deleteId}) //Apex Method for Delete operation;
+        deleteRecord(this.deleteId)
             .then( result => {
                 console.log('result:--', result);
                 // this.handleIsLoading(false);
                 refreshApex(this.wiredRecords);
-                this.showToast('Success', result, 'Success', 'dismissable');
+                this.showToast('Success', 'Successful deleted', 'Success');
             }).catch( error => {
                 // this.handleIsLoading(false);
                 console.log(error);
-                this.showToast('Error updating or refreshing records', error.body.message, 'Error', 'dismissable');
+                this.showToast('Error updating or refreshing records', error.body.message, 'Error');
             });
     }
-    showToast(title, message, variant, mode) {
+    showToast(title, message, variant) {
         const event = new ShowToastEvent({
             title: title,
             message: message,
-            variant: variant,
-            mode: mode
+            variant: variant
         });
         this.dispatchEvent(event);
     }

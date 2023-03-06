@@ -38,11 +38,24 @@ public class GetAccountList {
         return acc;
     }
     @AuraEnabled(cacheable=true)
-    public static List<Account> getRelatedContact(String accId){
-        return [SELECT Id,(SELECT Id, Name FROM Contacts) FROM Account WHERE Id=: accId];
+    public static List<Contact> getRelatedContact(String accId){
+        // return [SELECT Id,(SELECT Id, Name FROM Contacts) FROM Account WHERE Id=: accId];
+        return [
+                SELECT 
+                Id, 
+                Name, 
+                AccountId 
+                FROM Contact 
+                WHERE AccountId=: accId];
+
     }
     @AuraEnabled(cacheable=true)
     public static List<Account> getRelatedOpportunity(String accId){
         return [SELECT Id,(SELECT Id, Name FROM Opportunities) FROM Account WHERE Id=: accId];
+    }
+    @AuraEnabled(cacheable=true)
+    public static List<Account> getRecords(){
+        return [SELECT Id, Name, (SELECT Id, Name FROM Contacts) FROM Account WHERE Id != null];
+
     }
 }

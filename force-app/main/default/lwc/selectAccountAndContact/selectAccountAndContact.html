@@ -1,0 +1,14 @@
+<template>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col">
+            <c-reuseable-select-with-search-box options={accounts} placeholder={placeholderAcc}
+            onchange={handleSelectonchange}
+        ></c-reuseable-select-with-search-box>
+        </div>
+        <div class="slds-col">
+            <c-reuseable-select-with-search-box options={contacts} placeholder={placeholderCon}
+            onchange={handleSelectonchange}
+            ></c-reuseable-select-with-search-box>
+        </div>
+    </div>
+</template>

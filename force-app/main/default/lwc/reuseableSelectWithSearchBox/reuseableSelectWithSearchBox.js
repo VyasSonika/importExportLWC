@@ -11,28 +11,29 @@ export default class ReuseableSelectWithSearchBox extends LightningElement {
     @track inputValue = "";
     @api placeholder;
     @api options;
-    @track optionsToDisplay;
+    @track optionsToDisplay = [];
     value = "";
     label = "";
     delaytimeout;
     valueMatch = false;
     _rendered = false;
+    @track recordId = ''; 
 
+    //constructor
+    constructor() {
+        super();
+    }
+    // if you have large data then use this methos
     proxyObject(obje){
         return JSON.parse(obje);
     }
 
     connectedCallback() {
-        // console.log('option:-', );
-        this.options = this.proxyObject(this.options);
-        // let options = this.options;
-        // options.map(item=>{
-        //     item.label = item.first_name;
-        //     item.value = item.id;
-        //     // console.log('modify item:-', item);
+        console.log('option:-', JSON.parse(JSON.stringify(this.options)));
 
-        // })
-        console.log('modify option:-', this.options);
+        this.options = JSON.parse(JSON.stringify(this.options))
+       
+        // console.log('modify option:-', this.options);
         this.setOptionsAndValues(this.options);
     }
 
@@ -102,11 +103,11 @@ export default class ReuseableSelectWithSearchBox extends LightningElement {
     //         }, 1000);
     //     }
     // }
-    // closeDropdown(){
-    //     console.log('close drop down');
-    //     this.toggleOpenDropDown(false);
+    closeDropdown(){
+        console.log('close drop down');
+        this.toggleOpenDropDown(false);
 
-    // }
+    }
     //Method to handle readonly input click
     handleInputClick(event) {
         this.resetParameters();
@@ -115,15 +116,15 @@ export default class ReuseableSelectWithSearchBox extends LightningElement {
         let value = event.target.value;
         let newOpt = this.template.querySelectorAll('.slds-listbox__item');
         newOpt.forEach(ele=>{
-            console.log('ele:-', ele.dataset.label);
+            // console.log('ele:-', ele.dataset.label);
             if(ele.dataset.label === value){
-                console.log('option  match------', ele.dataset.label)
-                let selectedOpt = this.template.querySelector(`.slds-listbox__item[data-value='${value}']`);
+                // console.log('option  match------')
+                let selectedOpt = this.template.querySelector(`.slds-listbox__item[data-label='${value}']`);
                 selectedOpt.style.backgroundColor = 'yellow';
             }else{
-                console.log('option not match====', ele.dataset.label);
+                // console.log('option not match====', ele.dataset.label);
                 let valuChange = ele.dataset.label;
-                let opt = this.template.querySelector(`.slds-listbox__item[data-value='${valuChange}']`)
+                let opt = this.template.querySelector(`.slds-listbox__item[data-label='${valuChange}']`)
                 opt.style.backgroundColor = 'white';
             }
         })
@@ -152,9 +153,10 @@ export default class ReuseableSelectWithSearchBox extends LightningElement {
     filterDropdownList(key) {
         let value = this.value;
         let  filteredOptions = this.options.filter(item => item.label.toLowerCase().includes(key.toLowerCase()));
+        console.log('filteredOptions:-', JSON.parse(JSON.stringify(filteredOptions)));
         if(filteredOptions != 0){
-            this.optionsToDisplay = filteredOptions;
-            console.log('filteredOptions:--', this.optionsToDisplay);
+            this.optionsToDisplay = JSON.parse(JSON.stringify(filteredOptions));
+            console.log('filterDropdownList:--', this.optionsToDisplay);
             this.valueMatch = true;
         }else{
             this.valueMatch = false;
@@ -223,14 +225,7 @@ export default class ReuseableSelectWithSearchBox extends LightningElement {
     get isDropdownOpen() {
         return (this.openDropDown ? true : false);
     }
-    @api
-    get optionsChange(){
-        return this.options;
-    }
-    set optionsChange(val){
-        this.options = val
-        console.log('set method', this.options);
-    }
+   
     removeText(){
         this.inputValue = ""; 
         this.openDropDown = false;

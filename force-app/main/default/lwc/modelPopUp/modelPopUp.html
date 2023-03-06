@@ -1,6 +1,6 @@
 <template>
     <lightning-card>
-    <template if:true={isopenmodel}>
+    <template if:true={isOpenmodel}>
         <div class="slds-container_small">
             <section role="dialog" tabindex="-1" data-controls-modal="modal-Id" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open" data-keyboard="false" data-backdrop="static">
                 <div class="slds-modal__container" id="modal-Id">
@@ -8,7 +8,7 @@
                         <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit Account Record</h2>
                     </header>
                 <lightning-card>
-                    <lightning-record-edit-form object-api-name={objectApiName} record-id={recordId} 
+                    <!-- <lightning-record-edit-form object-api-name={objectApiName} record-id={recordId} 
                         onsuccess={saveMethod}>
                                 <lightning-messages></lightning-messages>
                                 <div class="slds-var-m-around_medium"> 
@@ -30,7 +30,10 @@
                             <lightning-button  variant="brand" type="submit"  label="Save">
                             </lightning-button>
                         </footer>
-                    </lightning-record-edit-form>
+                    </lightning-record-edit-form> -->
+                <lightning-input label="Add Catagery" value={value} onchange={handleChange}
+
+                ></lightning-input>
                 </lightning-card> 
                 </div>
             </section>

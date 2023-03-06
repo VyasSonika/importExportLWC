@@ -92,15 +92,16 @@ export default class AddLocation extends LightningElement {
             // this.records = data;
             let record12 = JSON.parse(JSON.stringify(data));
             record12.Address= {};
-            // console.log(record12);
+            console.log(record12);
             // this.records = record12;
              
             this.records = record12.map((r)=>{
-                    r.Address = r.Destination_Address__c.countryCode+ ', ' + r.Destination_Address__c.street + ', '+
-                    r.Destination_Address__c.city + ', '+ r.Destination_Address__c.stateCode + ', ' +
-                    r.Destination_Address__c.postalCode;
-                    this.recordId = r.Id;
-                    return r;
+                console.log('r:--', r);
+                r.Address = r.Destination_Address__c.countryCode + ', ' + r.Destination_Address__c.street + ', '+
+                r.Destination_Address__c.city + ', '+ r.Destination_Address__c.stateCode + ', ' +
+                r.Destination_Address__c.postalCode;
+                this.recordId = r.Id;
+                return r;
             })
             this.dataPassChild = true;
         }

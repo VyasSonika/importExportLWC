@@ -1,0 +1,22 @@
+.mark {
+    background-color: yellow;
+    color: black;
+}
+.refreshIcon{
+    position: absolute;
+    right: 15px;
+}
+.searchIcon{
+    position: absolute;
+    left: 10px;
+}
+.search-input-class{
+    padding-left: 50px;
+}
+.iconPointer {
+    pointer-events:all
+}
+.scrollList{
+    overflow-y: scroll;
+    height: 150px;
+}
