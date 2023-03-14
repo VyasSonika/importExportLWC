@@ -1,0 +1,103 @@
+.mapLocationCard{
+  border: 2px solid rgb(231, 229, 229);
+  border-radius: 10px;
+  background-color: white;
+  /* height: auto; */
+  width: auto;
+  padding: 20px;
+  }
+
+.table-container {
+  height: 10em;
+}
+table {
+  display: block;
+  flex-flow: column;
+  width: auto;
+  border-collapse: collapse;
+  /* position: relative;
+  z-index: 1; */
+}
+table tbody {
+/* body takes all the remaining available space */
+  flex: 1 1 auto;
+  display: block;
+}
+table tbody tr {
+  width: 100%;
+}
+table thead{
+  width: 100%;
+}
+table thead, table tbody tr {
+  display: table;
+  table-layout: fixed;
+  
+}
+th, tr, td{
+  text-align: left;
+  padding: 7px;
+  /* position: relative; */
+  
+  /* z-index: -1; */
+}
+.table-body tr:nth-child(odd){
+  background-color: rgb(231, 229, 229);
+  border-radius: 8px;
+}
+.truncateClass{
+  white-space: nowrap;
+  width: 174px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* width */
+.table-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+.table-body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgb(190, 190, 190);
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(14, 0, 0);
+  border-radius: 7px;
+  height: 0px;
+}
+/*scrollbar button design*/
+::-webkit-scrollbar-button {
+  height: 5px;
+} 
+.table_header_thead{
+  margin-left: -15px;
+}
+.table_header_th{
+  display: contents;
+}
+.slds-input-has-icon{
+  position: absolute;
+  z-index: 1;
+  padding-left: 15px;
+  padding-top: 40px;
+}
+.tooltip-text {
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+  left: 300px;
+  margin-top: 30px;
+  /* width: 100px; */
+  color: white;
+  font-size: 12px;
+  background-color: #192733;
+  border-radius: 10px;
+  padding: 10px 15px 10px 15px;
+}
+
+.hover-text:hover .tooltip-text {
+  visibility: visible;
+}

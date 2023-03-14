@@ -114,6 +114,7 @@ export default class ReuseableSelectWithSearchBox extends LightningElement {
         this.toggleOpenDropDown(true);
         console.log('input click', event.target.value);
         let value = event.target.value;
+        // if(value === '')
         let newOpt = this.template.querySelectorAll('.slds-listbox__item');
         newOpt.forEach(ele=>{
             // console.log('ele:-', ele.dataset.label);
@@ -151,13 +152,12 @@ export default class ReuseableSelectWithSearchBox extends LightningElement {
 
     //Method to filter dropdown list
     filterDropdownList(key) {
-        let value = this.value;
         let  filteredOptions = this.options.filter(item => item.label.toLowerCase().includes(key.toLowerCase()));
         console.log('filteredOptions:-', JSON.parse(JSON.stringify(filteredOptions)));
         if(filteredOptions != 0){
+            this.valueMatch = true; 
             this.optionsToDisplay = JSON.parse(JSON.stringify(filteredOptions));
             console.log('filterDropdownList:--', this.optionsToDisplay);
-            this.valueMatch = true;
         }else{
             this.valueMatch = false;
         }
@@ -228,7 +228,8 @@ export default class ReuseableSelectWithSearchBox extends LightningElement {
    
     removeText(){
         this.inputValue = ""; 
-        this.openDropDown = false;
+        this.toggleOpenDropDown(true);
+
         this.setOptionsAndValues(this.options);
        
     }

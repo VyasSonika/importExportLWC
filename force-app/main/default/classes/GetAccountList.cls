@@ -55,7 +55,7 @@ public class GetAccountList {
     }
     @AuraEnabled(cacheable=true)
     public static List<Account> getRecords(){
-        return [SELECT Id, Name, (SELECT Id, Name FROM Contacts) FROM Account WHERE Id != null];
+        return [SELECT Id, Name, (SELECT Id, Name FROM Contacts) FROM Account WHERE Id != null Order By Name Asc];
 
     }
 }

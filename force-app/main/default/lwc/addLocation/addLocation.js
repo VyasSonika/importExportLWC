@@ -12,6 +12,7 @@ import { readAsDataURL } from './readFile';
 import { updateRecord } from 'lightning/uiRecordApi';
 import { loadScript } from 'lightning/platformResourceLoader';
 import excelFileReader from '@salesforce/resourceUrl/sheetjs';
+import GanttChart from '@salesforce/resourceUrl/ganttChartLWC';
 let recordsList = [];
 const cols= [
     {label:'Destination Name', fieldName:'Name', type:'text'},
@@ -67,8 +68,10 @@ export default class AddLocation extends LightningElement {
     dataPassChild = false;
     @track fields = [];
     connectedCallback() {
-
-        loadScript(this, excelFileReader + '/sheetjs/sheetmin.js')
+        Promise.all([
+            // loadScript(this, GanttChart),
+            loadScript(this, excelFileReader + '/sheetjs/sheetmin.js')
+        ])
         .then(result => {
             console.log('result', result);
         })
@@ -77,7 +80,7 @@ export default class AddLocation extends LightningElement {
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Excel Upload: Error loading excelFileReader',
-                    message: error.message,
+                    message: this.error,
                     variant: 'error'
                 })
             );
@@ -96,7 +99,6 @@ export default class AddLocation extends LightningElement {
             // this.records = record12;
              
             this.records = record12.map((r)=>{
-                console.log('r:--', r);
                 r.Address = r.Destination_Address__c.countryCode + ', ' + r.Destination_Address__c.street + ', '+
                 r.Destination_Address__c.city + ', '+ r.Destination_Address__c.stateCode + ', ' +
                 r.Destination_Address__c.postalCode;
